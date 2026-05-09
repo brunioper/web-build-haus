@@ -60,9 +60,13 @@ export default function Work() {
                   {String(i+1).padStart(2,"0")}
                 </span>
 
-                {/* Tag pill */}
+                {/* Tag pills */}
                 <span className="relative z-10 hidden sm:inline-flex shrink-0 text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full border"
                   style={{ borderColor:"var(--border)", color:"var(--muted)", fontFamily:"var(--font-body)" }}>{p.tag}</span>
+                {"industry" in p && (
+                  <span className="relative z-10 hidden lg:inline-flex shrink-0 text-[10px] uppercase tracking-widest px-2 py-0.5"
+                    style={{ color:"var(--muted)", fontFamily:"var(--font-body)", borderLeft:"1px solid var(--border)", paddingLeft:"0.75rem", marginLeft:"-0.25rem" }}>{(p as typeof p & {industry:string}).industry}</span>
+                )}
 
                 {/* Title */}
                 <div className="relative z-10 flex-1 min-w-0">

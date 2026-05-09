@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
 import Stats from "@/components/Stats";
 import Work from "@/components/Work";
+import Provocation from "@/components/Provocation";
 import Services from "@/components/Services";
 import Technologies from "@/components/Technologies";
 import About from "@/components/About";
@@ -17,6 +18,7 @@ export default function Page() {
         <Hero />
         <Marquee />
         <Stats />
+        <Provocation />
         <Work />
         <Services />
         <Technologies />

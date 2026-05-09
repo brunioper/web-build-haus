@@ -2,12 +2,12 @@ export type Lang = "en" | "es";
 
 export const dict = {
   en: {
-    nav: { work:"Work", services:"Services", stack:"Stack", about:"About", contact:"Contact", cta:"Start a project" },
+    nav: { work:"Work", services:"Services", stack:"Stack", about:"About", contact:"Contact", cta:"Let's team up." },
     hero: {
       location:"Based in Montevideo, Uruguay",
       line1:"We build digital", line2:"experiences that", line3:"convert.",
-      sub:"Landing pages, e-commerce & web apps for brands that want real results.",
-      cta:"Start a project", scroll:"Scroll",
+      sub:"No templates. No shortcuts. Sites built from scratch for brands that mean business.",
+      cta:"Let's team up.", scroll:"Scroll",
     },
     marquee:["Next.js","React","Shopify","WordPress","TypeScript","Webflow","WooCommerce","Tailwind CSS","E-Commerce","Landing Pages","UI / UX","Branding"],
     stats:[
@@ -19,15 +19,15 @@ export const dict = {
     work:{
       label:"Selected work", headline:"Real projects. Real results.",
       sub:"From landing pages to full e-commerce platforms — built from scratch, delivered on time.",
-      cta:"Start your project",
+      cta:"Let's team up.",
       items:[
-        {title:"Zona Franca Colonia Suiza",category:"Landing Page · Branding",desc:"Full landing page for a Swiss-Uruguayan free trade zone.",year:"2023",url:"https://www.zonafrancacoloniasuiza.com/",gradient:"linear-gradient(135deg,#0D1B4B,#1A3A9E)",tag:"Landing Page"},
-        {title:"JUV Activewear",category:"E-Commerce · Dev",desc:"Ongoing development & support for an Israeli activewear brand.",year:"2024",url:"https://juv-activewear.co.il/",gradient:"linear-gradient(135deg,#3D0A00,#B83200)",tag:"E-Commerce"},
-        {title:"Hemistion",category:"Landing Page · Corporate",desc:"Corporate landing page built from scratch for professional services.",year:"2023",url:"https://hemistion.com/web/index.php",gradient:"linear-gradient(135deg,#070E1C,#1A3A6C)",tag:"Landing Page"},
-        {title:"GrowIt UY",category:"E-Commerce · Full Build",desc:"Full e-commerce platform for a home hydroponics brand.",year:"2023",url:"https://growituy.com/",gradient:"linear-gradient(135deg,#081A08,#1A5A1A)",tag:"E-Commerce"},
-        {title:"Cockpit UY",category:"E-Commerce · Full Build",desc:"Custom e-commerce store for sim racing cockpits.",year:"2024",url:"https://cockpituy.com/",gradient:"linear-gradient(135deg,#05080F,#0E2040)",tag:"E-Commerce"},
-        {title:"Operal",category:"Landing Page · Logistics",desc:"Conversion-focused landing for a logistics consulting firm.",year:"2022",url:"https://operal.com.uy/",gradient:"linear-gradient(135deg,#0A1E2E,#1A5A8A)",tag:"Landing Page"},
-        {title:"Opertti & Asociados",category:"Landing Page · Consulting",desc:"Professional site for a trade & logistics consulting firm.",year:"2022",url:"https://operttiasociados.net/",gradient:"linear-gradient(135deg,#141414,#3A3A3A)",tag:"Landing Page"},
+        {title:"Zona Franca Colonia Suiza",category:"Landing Page · Branding",desc:"Full landing page for a Swiss-Uruguayan free trade zone.",year:"2023",url:"https://www.zonafrancacoloniasuiza.com/",gradient:"linear-gradient(135deg,#0D1B4B,#1A3A9E)",tag:"Landing Page",industry:"Industrial / Real Estate"},
+        {title:"JUV Activewear",category:"E-Commerce · Dev",desc:"Ongoing development & support for an Israeli activewear brand.",year:"2024",url:"https://juv-activewear.co.il/",gradient:"linear-gradient(135deg,#3D0A00,#B83200)",tag:"E-Commerce",industry:"Fashion / Sport"},
+        {title:"Hemistion",category:"Landing Page · Corporate",desc:"Corporate landing page built from scratch for professional services.",year:"2023",url:"https://hemistion.com/web/index.php",gradient:"linear-gradient(135deg,#070E1C,#1A3A6C)",tag:"Landing Page",industry:"Professional Services"},
+        {title:"GrowIt UY",category:"E-Commerce · Full Build",desc:"Full e-commerce platform for a home hydroponics brand.",year:"2023",url:"https://growituy.com/",gradient:"linear-gradient(135deg,#081A08,#1A5A1A)",tag:"E-Commerce",industry:"Agriculture / Consumer"},
+        {title:"Cockpit UY",category:"E-Commerce · Full Build",desc:"Custom e-commerce store for sim racing cockpits.",year:"2024",url:"https://cockpituy.com/",gradient:"linear-gradient(135deg,#05080F,#0E2040)",tag:"E-Commerce",industry:"Sport / Hobby"},
+        {title:"Operal",category:"Landing Page · Logistics",desc:"Conversion-focused landing for a logistics consulting firm.",year:"2022",url:"https://operal.com.uy/",gradient:"linear-gradient(135deg,#0A1E2E,#1A5A8A)",tag:"Landing Page",industry:"Logistics / Consulting"},
+        {title:"Opertti & Asociados",category:"Landing Page · Consulting",desc:"Professional site for a trade & logistics consulting firm.",year:"2022",url:"https://operttiasociados.net/",gradient:"linear-gradient(135deg,#141414,#3A3A3A)",tag:"Landing Page",industry:"Consulting / Legal"},
       ],
     },
     services:{
@@ -55,12 +55,12 @@ export const dict = {
       label:"About us", headline:"5 years building what moves brands forward.",
       body1:"We are Build Haus Studio — a web design and development studio based in Montevideo, Uruguay. Since 2019, we\'ve built landing pages, e-commerce stores, and web apps for brands across Latin America, Israel, and beyond.",
       body2:"We care about results, not just aesthetics. Every project starts with understanding your business goals — and ends with a product that converts.",
-      cta:"Get in touch", location:"Montevideo, Uruguay", founded:"Founded 2019",
+      cta:"Let's team up.", location:"Montevideo, Uruguay", founded:"Founded 2019",
     },
     contact:{
       label:"Let\'s work together", headline:"Ready to build something great?",
       body:"Tell us about your project and we\'ll get back to you within 24 hours.",
-      cta:"Get in touch", email:"hello@buildhausstudio.com", or:"or email us directly",
+      cta:"Let's team up.", email:"hello@buildhausstudio.com", or:"or reach us directly",
     },
     footer:{
       tagline:"Crafting digital products since 2019.", location:"Montevideo, Uruguay",
@@ -68,12 +68,12 @@ export const dict = {
     },
   },
   es: {
-    nav:{ work:"Proyectos", services:"Servicios", stack:"Stack", about:"Nosotros", contact:"Contacto", cta:"Iniciar proyecto" },
+    nav:{ work:"Proyectos", services:"Servicios", stack:"Stack", about:"Nosotros", contact:"Contacto", cta:"Hablemos." },
     hero:{
       location:"Con base en Montevideo, Uruguay",
       line1:"Construimos experiencias", line2:"digitales que", line3:"convierten.",
-      sub:"Landing pages, e-commerce y apps web para marcas que buscan resultados reales.",
-      cta:"Iniciar proyecto", scroll:"Explorar",
+      sub:"Sin plantillas. Sin atajos. Sitios construidos desde cero para marcas que van en serio.",
+      cta:"Hablemos.", scroll:"Explorar",
     },
     marquee:["Next.js","React","Shopify","WordPress","TypeScript","Webflow","WooCommerce","Tailwind CSS","E-Commerce","Landing Pages","UI / UX","Branding"],
     stats:[
@@ -85,15 +85,15 @@ export const dict = {
     work:{
       label:"Trabajo seleccionado", headline:"Proyectos reales. Resultados reales.",
       sub:"Desde landing pages hasta plataformas de e-commerce — construidas desde cero, entregadas a tiempo.",
-      cta:"Iniciar tu proyecto",
+      cta:"Hablemos.",
       items:[
-        {title:"Zona Franca Colonia Suiza",category:"Landing Page · Branding",desc:"Landing page completa para una zona franca suizo-uruguaya.",year:"2023",url:"https://www.zonafrancacoloniasuiza.com/",gradient:"linear-gradient(135deg,#0D1B4B,#1A3A9E)",tag:"Landing Page"},
-        {title:"JUV Activewear",category:"E-Commerce · Desarrollo",desc:"Desarrollo y soporte para una marca israelí de ropa deportiva.",year:"2024",url:"https://juv-activewear.co.il/",gradient:"linear-gradient(135deg,#3D0A00,#B83200)",tag:"E-Commerce"},
-        {title:"Hemistion",category:"Landing Page · Corporativo",desc:"Landing page corporativa desde cero para servicios profesionales.",year:"2023",url:"https://hemistion.com/web/index.php",gradient:"linear-gradient(135deg,#070E1C,#1A3A6C)",tag:"Landing Page"},
-        {title:"GrowIt UY",category:"E-Commerce · Full Build",desc:"Plataforma de e-commerce para una marca de huerta hidropónica.",year:"2023",url:"https://growituy.com/",gradient:"linear-gradient(135deg,#081A08,#1A5A1A)",tag:"E-Commerce"},
-        {title:"Cockpit UY",category:"E-Commerce · Full Build",desc:"Tienda online para cockpits de simulación de carreras.",year:"2024",url:"https://cockpituy.com/",gradient:"linear-gradient(135deg,#05080F,#0E2040)",tag:"E-Commerce"},
-        {title:"Operal",category:"Landing Page · Logística",desc:"Landing orientada a conversión para una consultora de logística.",year:"2022",url:"https://operal.com.uy/",gradient:"linear-gradient(135deg,#0A1E2E,#1A5A8A)",tag:"Landing Page"},
-        {title:"Opertti & Asociados",category:"Landing Page · Consultoría",desc:"Sitio profesional para una consultora de comercio y logística.",year:"2022",url:"https://operttiasociados.net/",gradient:"linear-gradient(135deg,#141414,#3A3A3A)",tag:"Landing Page"},
+        {title:"Zona Franca Colonia Suiza",category:"Landing Page · Branding",desc:"Landing page completa para una zona franca suizo-uruguaya.",year:"2023",url:"https://www.zonafrancacoloniasuiza.com/",gradient:"linear-gradient(135deg,#0D1B4B,#1A3A9E)",tag:"Landing Page",industry:"Industrial / Real Estate"},
+        {title:"JUV Activewear",category:"E-Commerce · Desarrollo",desc:"Desarrollo y soporte para una marca israelí de ropa deportiva.",year:"2024",url:"https://juv-activewear.co.il/",gradient:"linear-gradient(135deg,#3D0A00,#B83200)",tag:"E-Commerce",industry:"Fashion / Sport"},
+        {title:"Hemistion",category:"Landing Page · Corporativo",desc:"Landing page corporativa desde cero para servicios profesionales.",year:"2023",url:"https://hemistion.com/web/index.php",gradient:"linear-gradient(135deg,#070E1C,#1A3A6C)",tag:"Landing Page",industry:"Professional Services"},
+        {title:"GrowIt UY",category:"E-Commerce · Full Build",desc:"Plataforma de e-commerce para una marca de huerta hidropónica.",year:"2023",url:"https://growituy.com/",gradient:"linear-gradient(135deg,#081A08,#1A5A1A)",tag:"E-Commerce",industry:"Agriculture / Consumer"},
+        {title:"Cockpit UY",category:"E-Commerce · Full Build",desc:"Tienda online para cockpits de simulación de carreras.",year:"2024",url:"https://cockpituy.com/",gradient:"linear-gradient(135deg,#05080F,#0E2040)",tag:"E-Commerce",industry:"Sport / Hobby"},
+        {title:"Operal",category:"Landing Page · Logística",desc:"Landing orientada a conversión para una consultora de logística.",year:"2022",url:"https://operal.com.uy/",gradient:"linear-gradient(135deg,#0A1E2E,#1A5A8A)",tag:"Landing Page",industry:"Logistics / Consulting"},
+        {title:"Opertti & Asociados",category:"Landing Page · Consultoría",desc:"Sitio profesional para una consultora de comercio y logística.",year:"2022",url:"https://operttiasociados.net/",gradient:"linear-gradient(135deg,#141414,#3A3A3A)",tag:"Landing Page",industry:"Consulting / Legal"},
       ],
     },
     services:{
@@ -121,12 +121,12 @@ export const dict = {
       label:"Quiénes somos", headline:"5 años construyendo lo que impulsa marcas.",
       body1:"Somos Build Haus Studio — un estudio de diseño y desarrollo web con base en Montevideo, Uruguay. Desde 2019 construimos landing pages, tiendas online y apps web para marcas de América Latina, Israel y más.",
       body2:"Nos importan los resultados, no solo la estética. Cada proyecto comienza con entender tus objetivos y termina con un producto que convierte.",
-      cta:"Hablemos", location:"Montevideo, Uruguay", founded:"Fundado en 2019",
+      cta:"Hablemos.", location:"Montevideo, Uruguay", founded:"Fundado en 2019",
     },
     contact:{
       label:"Trabajemos juntos", headline:"¿Listo para construir algo grande?",
       body:"Cuéntanos sobre tu proyecto y te respondemos en menos de 24 horas.",
-      cta:"Contáctanos", email:"hello@buildhausstudio.com", or:"o escríbenos directamente",
+      cta:"Hablemos.", email:"hello@buildhausstudio.com", or:"o escríbenos directo",
     },
     footer:{
       tagline:"Creando productos digitales desde 2019.", location:"Montevideo, Uruguay",
