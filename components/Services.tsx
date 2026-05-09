@@ -17,8 +17,17 @@ export default function Services() {
       style={{ borderBottom: "1px solid var(--border)" }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        {/* Animated divider */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9, ease: EASE }}
+          style={{ height: "1px", background: "var(--border)", transformOrigin: "left", marginBottom: "5rem" }}
+        />
+
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-20 pb-6" style={{ borderBottom: "1px solid var(--border)" }}>
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-16">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -44,7 +53,7 @@ export default function Services() {
               className="font-light leading-[1.1]"
               style={{
                 fontFamily: "var(--font)",
-                fontSize: "clamp(24px, 3vw, 42px)",
+                fontSize: "clamp(22px, 2.8vw, 40px)",
                 color: "var(--text)",
                 letterSpacing: "-0.03em",
               }}
@@ -55,61 +64,76 @@ export default function Services() {
         </div>
 
         {/* Service rows */}
-        <div>
+        <div style={{ borderTop: "1px solid var(--border)" }}>
           {t.services.items.map((service, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.6, delay: i * 0.07 }}
+              viewport={{ once: true, margin: "-30px" }}
+              transition={{ duration: 0.55, delay: i * 0.06 }}
               onMouseEnter={() => setHovered(i)}
               onMouseLeave={() => setHovered(null)}
-              className="group grid grid-cols-[auto_1fr_auto] md:grid-cols-[64px_1fr_2fr_auto] items-center gap-6 py-7 cursor-default transition-colors duration-300"
+              className="relative flex items-center justify-between gap-4 py-6 md:py-7 cursor-default transition-colors duration-300"
               style={{
                 borderBottom: "1px solid var(--border)",
                 background: hovered === i ? "var(--surface)" : "transparent",
+                paddingLeft: "1rem",
+                paddingRight: "1rem",
+                margin: "0 -1rem",
               }}
             >
-              {/* Number */}
-              <span
-                className="text-xs font-medium tabular-nums"
-                style={{ color: "var(--muted)", fontFamily: "var(--font)" }}
-              >
-                {String(i + 1).padStart(2, "0")}
-              </span>
+              {/* Sliding accent line on hover */}
+              <motion.div
+                className="absolute left-0 top-0 bottom-0 w-0.5"
+                animate={{ opacity: hovered === i ? 1 : 0 }}
+                transition={{ duration: 0.2 }}
+                style={{ background: "var(--accent)" }}
+              />
 
-              {/* Title */}
-              <h3
-                className="text-xl md:text-2xl font-light"
-                style={{
-                  fontFamily: "var(--font)",
-                  color: "var(--text)",
-                  letterSpacing: "-0.02em",
-                }}
-              >
-                {service.title}
-              </h3>
+              <div className="flex items-center gap-6 md:gap-12 flex-1 min-w-0">
+                {/* Number */}
+                <span
+                  className="text-xs font-medium tabular-nums shrink-0 w-6"
+                  style={{ color: "var(--muted)", fontFamily: "var(--font)" }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
 
-              {/* Description — hidden on mobile, shown on md+ */}
-              <p
-                className="hidden md:block text-sm leading-relaxed"
-                style={{ color: "var(--muted)", fontFamily: "var(--font)" }}
-              >
-                {service.desc}
-              </p>
+                {/* Title */}
+                <h3
+                  className="text-lg md:text-2xl font-light shrink-0"
+                  style={{
+                    fontFamily: "var(--font)",
+                    color: "var(--text)",
+                    letterSpacing: "-0.02em",
+                    transition: "color 0.2s",
+                  }}
+                >
+                  {service.title}
+                </h3>
+
+                {/* Description — desktop only */}
+                <p
+                  className="hidden md:block text-sm leading-relaxed truncate"
+                  style={{ color: "var(--muted)", fontFamily: "var(--font)" }}
+                >
+                  {service.desc}
+                </p>
+              </div>
 
               {/* Arrow */}
-              <span
-                className="text-base transition-all duration-300"
-                style={{
-                  color: "var(--accent)",
+              <motion.span
+                animate={{
                   opacity: hovered === i ? 1 : 0,
-                  transform: hovered === i ? "translate(0,0)" : "translate(-8px,8px)",
+                  x: hovered === i ? 0 : -8,
                 }}
+                transition={{ duration: 0.2 }}
+                className="text-lg shrink-0"
+                style={{ color: "var(--accent)" }}
               >
                 ↗
-              </span>
+              </motion.span>
             </motion.div>
           ))}
         </div>

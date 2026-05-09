@@ -34,12 +34,13 @@ export default function Stats() {
   const { t } = useLang();
 
   return (
-    <section
-      className="py-20 md:py-28"
-      style={{ borderBottom: "1px solid var(--border)" }}
-    >
+    <section style={{ borderBottom: "1px solid var(--border)" }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="grid grid-cols-2 md:grid-cols-4">
+        {/* Use border-box grid: left border on container, right+bottom border on each cell */}
+        <div
+          className="grid grid-cols-2 md:grid-cols-4"
+          style={{ borderLeft: "1px solid var(--border)", borderTop: "1px solid var(--border)" }}
+        >
           {t.stats.map((stat, i) => (
             <motion.div
               key={i}
@@ -47,17 +48,17 @@ export default function Stats() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.7, delay: i * 0.08 }}
-              className="flex flex-col gap-3 py-8 md:py-0"
+              className="flex flex-col gap-3 py-12 px-8"
               style={{
-                borderRight: i < 3 ? "1px solid var(--border)" : "none",
-                paddingLeft: i === 0 ? 0 : "2rem",
-                paddingRight: "2rem",
+                borderRight: "1px solid var(--border)",
+                borderBottom: "1px solid var(--border)",
               }}
             >
               <p
-                className="text-5xl md:text-6xl font-light leading-none"
+                className="text-5xl md:text-6xl leading-none"
                 style={{
                   fontFamily: "var(--font)",
+                  fontWeight: 300,
                   color: "var(--text)",
                   letterSpacing: "-0.04em",
                 }}

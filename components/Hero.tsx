@@ -1,7 +1,9 @@
 "use client";
 
-import { motion, type Variants } from "motion/react";
+import { useRef } from "react";
+import { motion, useMotionValue, useSpring, type Variants } from "motion/react";
 import { useLang } from "@/components/LangContext";
+import TimeDisplay from "@/components/TimeDisplay";
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -20,12 +22,47 @@ const fadeIn: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.8 } },
 };
 
+function MagneticCTA({ href, children }: { href: string; children: React.ReactNode }) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const springX = useSpring(x, { stiffness: 300, damping: 25 });
+  const springY = useSpring(y, { stiffness: 300, damping: 25 });
+
+  const onMove = (e: React.MouseEvent) => {
+    const rect = ref.current!.getBoundingClientRect();
+    x.set((e.clientX - (rect.left + rect.width / 2)) * 0.25);
+    y.set((e.clientY - (rect.top + rect.height / 2)) * 0.25);
+  };
+
+  return (
+    <motion.a
+      ref={ref}
+      href={href}
+      style={{ x: springX, y: springY, color: "var(--text)", fontFamily: "var(--font)" }}
+      onMouseMove={onMove}
+      onMouseLeave={() => { x.set(0); y.set(0); }}
+      className="group inline-flex items-center gap-3 text-base font-medium"
+    >
+      <motion.span
+        className="w-11 h-11 rounded-full flex items-center justify-center text-sm transition-colors duration-300"
+        style={{ border: "1px solid var(--border)", color: "var(--text)" }}
+        whileHover={{ backgroundColor: "var(--accent)", color: "#fff", borderColor: "var(--accent)" }}
+      >
+        →
+      </motion.span>
+      <span style={{ color: "var(--text)", fontFamily: "var(--font)" }}>{children}</span>
+    </motion.a>
+  );
+}
+
 export default function Hero() {
   const { t } = useLang();
 
   return (
     <section className="relative min-h-screen flex flex-col justify-between overflow-hidden">
-      <div className="flex-1 flex flex-col justify-center max-w-7xl mx-auto w-full px-6 lg:px-12 pt-32 pb-24">
+      {/* Main content */}
+      <div className="flex-1 flex flex-col justify-center max-w-7xl mx-auto w-full px-6 lg:px-12 pt-32 pb-16">
         {/* Location badge */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -53,10 +90,10 @@ export default function Hero() {
                 variants={lineVar}
                 style={{
                   fontFamily: "var(--font)",
-                  fontSize: "clamp(52px, 9vw, 116px)",
+                  fontSize: "clamp(52px, 9.5vw, 120px)",
                   fontWeight: 300,
                   letterSpacing: "-0.04em",
-                  lineHeight: 1.03,
+                  lineHeight: 1.02,
                   color: i === 2 ? "var(--accent)" : "var(--text)",
                   fontStyle: i === 2 ? "italic" : "normal",
                 }}
@@ -67,12 +104,12 @@ export default function Hero() {
           ))}
         </motion.div>
 
-        {/* Bottom row: sub + CTA */}
+        {/* Sub + CTA */}
         <motion.div
           variants={container}
           initial="hidden"
           animate="show"
-          className="flex flex-col sm:flex-row sm:items-end gap-8 sm:gap-20"
+          className="flex flex-col sm:flex-row sm:items-end gap-10 sm:gap-20"
         >
           <motion.p
             variants={fadeIn}
@@ -82,53 +119,44 @@ export default function Hero() {
             {t.hero.sub}
           </motion.p>
 
-          <motion.a
-            variants={fadeIn}
-            href="#contact"
-            className="group inline-flex items-center gap-3 text-base font-medium"
-            style={{ color: "var(--text)", fontFamily: "var(--font)" }}
-            whileHover={{ x: 4 }}
-            transition={{ duration: 0.2 }}
-          >
-            <span
-              className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300 group-hover:bg-[var(--accent)] group-hover:text-white"
-              style={{ border: "1px solid var(--border)", color: "var(--text)" }}
-            >
-              →
-            </span>
-            {t.hero.cta}
-          </motion.a>
+          <motion.div variants={fadeIn}>
+            <MagneticCTA href="#contact">{t.hero.cta}</MagneticCTA>
+          </motion.div>
         </motion.div>
       </div>
 
-      {/* Bottom bar */}
+      {/* Bottom bar — timezone + scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.6, duration: 0.8 }}
-        className="max-w-7xl mx-auto w-full px-6 lg:px-12 pb-8 flex justify-between items-center"
+        transition={{ delay: 1.4, duration: 0.8 }}
+        className="max-w-7xl mx-auto w-full px-6 lg:px-12 pb-8 pt-6 flex items-center justify-between"
         style={{ borderTop: "1px solid var(--border)" }}
       >
-        <span
-          className="text-xs tracking-widest uppercase pt-6"
-          style={{ color: "var(--muted)", fontFamily: "var(--font)" }}
-        >
-          EST. 2019
-        </span>
-        <div className="flex items-center gap-2 pt-6" style={{ color: "var(--muted)" }}>
+        <TimeDisplay />
+
+        <div className="flex items-center gap-6">
           <span
-            className="text-xs tracking-widest uppercase"
-            style={{ fontFamily: "var(--font)" }}
+            className="text-xs tracking-widest uppercase hidden md:block"
+            style={{ color: "var(--muted)", fontFamily: "var(--font)" }}
           >
-            {t.hero.scroll}
+            EST. 2019
           </span>
-          <motion.span
-            animate={{ y: [0, 5, 0] }}
-            transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
-            className="text-sm"
-          >
-            ↓
-          </motion.span>
+          <div className="flex items-center gap-2" style={{ color: "var(--muted)" }}>
+            <span
+              className="text-xs tracking-widest uppercase"
+              style={{ fontFamily: "var(--font)" }}
+            >
+              {t.hero.scroll}
+            </span>
+            <motion.span
+              animate={{ y: [0, 5, 0] }}
+              transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
+              className="text-sm"
+            >
+              ↓
+            </motion.span>
+          </div>
         </div>
       </motion.div>
     </section>
