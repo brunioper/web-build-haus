@@ -5,7 +5,7 @@ import { useLang } from "@/components/LangContext";
 import TimeDisplay from "@/components/TimeDisplay";
 
 const EASE: [number,number,number,number] = [0.22,1,0.36,1];
-const lineVar: Variants = { hidden:{y:"105%",opacity:0}, show:{y:0,opacity:1,transition:{duration:1.1,ease:EASE}} };
+const lineVar: Variants = { hidden:{y:"108%",skewY:4,opacity:0}, show:{y:0,skewY:0,opacity:1,transition:{duration:1.1,ease:EASE}} };
 const container: Variants = { hidden:{}, show:{transition:{staggerChildren:0.15,delayChildren:0.2}} };
 
 function MagneticCTA({ href, children }: { href:string; children:React.ReactNode }) {

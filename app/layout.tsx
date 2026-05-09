@@ -4,9 +4,11 @@ import "./globals.css";
 import { LangProvider } from "@/components/LangContext";
 import { ThemeProvider } from "@/components/ThemeContext";
 import Cursor from "@/components/Cursor";
+import PageIntro from "@/components/PageIntro";
+import SmoothScroll from "@/components/SmoothScroll";
 
-const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-display", weight: ["300","400","500","600","700"] });
-const inter = Inter({ subsets: ["latin"], variable: "--font-body", weight: ["300","400","500"] });
+const spaceGrotesk = Space_Grotesk({ subsets:["latin"], variable:"--font-display", weight:["300","400","500","600","700"] });
+const inter = Inter({ subsets:["latin"], variable:"--font-body", weight:["300","400","500"] });
 
 export const metadata: Metadata = {
   title: "Build Haus Studio — Web Design & Development",
@@ -19,8 +21,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="min-h-screen">
         <ThemeProvider>
           <LangProvider>
-            <Cursor />
-            {children}
+            <SmoothScroll>
+              <PageIntro />
+              <Cursor />
+              {children}
+            </SmoothScroll>
           </LangProvider>
         </ThemeProvider>
       </body>

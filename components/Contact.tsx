@@ -4,7 +4,7 @@ import { motion, useMotionValue, useSpring, type Variants } from "motion/react";
 import { useLang } from "@/components/LangContext";
 
 const EASE: [number,number,number,number] = [0.22,1,0.36,1];
-const lineVar: Variants = { hidden:{y:"110%",opacity:0}, show:{y:0,opacity:1,transition:{duration:1.1,ease:EASE}} };
+const lineVar: Variants = { hidden:{y:"110%",skewY:4,opacity:0}, show:{y:0,skewY:0,opacity:1,transition:{duration:1.1,ease:EASE}} };
 const stagger: Variants = { hidden:{}, show:{transition:{staggerChildren:0.12}} };
 
 function MagneticBtn({ href, children }: { href:string; children:React.ReactNode }) {

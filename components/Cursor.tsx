@@ -1,55 +1,69 @@
 "use client";
-
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Cursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
     const dot = dotRef.current;
     const ring = ringRef.current;
     if (!dot || !ring) return;
 
-    let mouseX = -100;
-    let mouseY = -100;
-    let ringX = -100;
-    let ringY = -100;
-    let rafId: number;
+    let mx = -200, my = -200, rx = -200, ry = -200, rafId: number;
 
     const onMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      dot.style.transform = `translate(${mouseX - 3}px, ${mouseY - 3}px)`;
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = `translate(${mx - 4}px, ${my - 4}px)`;
+    };
+
+    const onOver = (e: MouseEvent) => {
+      const el = (e.target as HTMLElement).closest("a, button, [role='button']");
+      setHovered(!!el);
     };
 
     const tick = () => {
-      ringX += (mouseX - ringX) * 0.1;
-      ringY += (mouseY - ringY) * 0.1;
-      ring.style.transform = `translate(${ringX - 18}px, ${ringY - 18}px)`;
+      const ease = hovered ? 0.07 : 0.1;
+      rx += (mx - rx) * ease;
+      ry += (my - ry) * ease;
+      ring.style.transform = `translate(${rx - 22}px, ${ry - 22}px)`;
       rafId = requestAnimationFrame(tick);
     };
 
     window.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseover", onOver);
     rafId = requestAnimationFrame(tick);
 
     return () => {
       window.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseover", onOver);
       cancelAnimationFrame(rafId);
     };
-  }, []);
+  }, [hovered]);
 
   return (
     <>
       <div
         ref={dotRef}
-        className="cursor-dot fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-[9999]"
-        style={{ background: "var(--accent)" }}
+        className="cursor-dot fixed top-0 left-0 rounded-full pointer-events-none z-[9998]"
+        style={{
+          width: hovered ? "10px" : "7px",
+          height: hovered ? "10px" : "7px",
+          background: "var(--accent)",
+          transition: "width 0.25s ease, height 0.25s ease",
+        }}
       />
       <div
         ref={ringRef}
-        className="cursor-ring fixed top-0 left-0 w-9 h-9 rounded-full pointer-events-none z-[9998]"
-        style={{ border: "1px solid rgba(46,95,232,0.4)" }}
+        className="cursor-ring fixed top-0 left-0 rounded-full pointer-events-none z-[9997]"
+        style={{
+          width: hovered ? "52px" : "44px",
+          height: hovered ? "52px" : "44px",
+          border: `1px solid ${hovered ? "rgba(46,95,232,0.8)" : "rgba(46,95,232,0.4)"}`,
+          background: hovered ? "rgba(46,95,232,0.07)" : "transparent",
+          transition: "width 0.35s ease, height 0.35s ease, border-color 0.25s ease, background 0.25s ease",
+        }}
       />
     </>
   );
