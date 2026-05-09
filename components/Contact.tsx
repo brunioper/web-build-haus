@@ -13,10 +13,10 @@ function MagneticBtn({ href, children, outline }: { href:string; children:React.
   const sx = useSpring(x,{stiffness:300,damping:25}); const sy = useSpring(y,{stiffness:300,damping:25});
   const onMove = (e: React.MouseEvent) => { const r = ref.current!.getBoundingClientRect(); x.set((e.clientX-(r.left+r.width/2))*0.3); y.set((e.clientY-(r.top+r.height/2))*0.3); };
   return (
-    <motion.a ref={ref} href={href} style={{ x:sx, y:sy, fontFamily:"var(--font-body)" }}
+    <motion.a ref={ref} href={href}
+      style={{ x:sx, y:sy, fontFamily:"var(--font-body)", ...(outline ? { border:"1px solid var(--border)", color:"var(--text)" } : { background:"var(--accent)", color:"#fff" }) }}
       onMouseMove={onMove} onMouseLeave={()=>{x.set(0);y.set(0);}}
       className="inline-flex items-center gap-3 px-8 py-4 text-sm font-medium transition-all duration-300"
-      style={outline ? { border:"1px solid var(--border)", color:"var(--text)" } : { background:"var(--accent)", color:"#fff" }}
       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = outline ? "var(--surface)" : "var(--accent-light)"; }}
       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = outline ? "transparent" : "var(--accent)"; }}>
       {children}
