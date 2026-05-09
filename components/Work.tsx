@@ -1,194 +1,82 @@
 "use client";
-
 import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import { useLang } from "@/components/LangContext";
 
-const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const EASE: [number,number,number,number] = [0.22,1,0.36,1];
 
-type Project = {
-  title: string;
-  category: string;
-  year: string;
-  gradient: string;
-};
+type Project = { title:string; category:string; desc:string; year:string; url:string; gradient:string; tag:string };
 
-function WorkCard({ project, index }: { project: Project; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const bgX = useMotionValue(0);
-  const bgY = useMotionValue(0);
-  const springX = useSpring(bgX, { stiffness: 150, damping: 25 });
-  const springY = useSpring(bgY, { stiffness: 150, damping: 25 });
-
-  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = ref.current!.getBoundingClientRect();
-    const relX = (e.clientX - rect.left) / rect.width - 0.5;
-    const relY = (e.clientY - rect.top) / rect.height - 0.5;
-    bgX.set(relX * -24);
-    bgY.set(relY * -24);
+function WorkCard({ p, i }: { p:Project; i:number }) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const bx = useMotionValue(0); const by = useMotionValue(0);
+  const sbx = useSpring(bx,{stiffness:150,damping:25}); const sby = useSpring(by,{stiffness:150,damping:25});
+  const onMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const r = ref.current!.getBoundingClientRect();
+    bx.set(((e.clientX-r.left)/r.width-0.5)*-24);
+    by.set(((e.clientY-r.top)/r.height-0.5)*-24);
   };
-
-  const onLeave = () => {
-    bgX.set(0);
-    bgY.set(0);
-  };
-
+  const isLast = i === 6;
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 32 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.8, ease: EASE, delay: (index % 2) * 0.1 }}
-      className="group relative overflow-hidden rounded-sm cursor-pointer"
-      style={{ aspectRatio: "4/3" }}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-    >
-      {/* Parallax background — slightly oversized to allow movement */}
-      <motion.div
-        className="absolute"
-        style={{
-          inset: "-24px",
-          background: project.gradient,
-          x: springX,
-          y: springY,
-        }}
-      />
-
-      {/* Dim overlay that lightens on hover */}
-      <motion.div
-        className="absolute inset-0 transition-opacity duration-500"
-        style={{ background: "rgba(0,0,0,0.25)" }}
-        whileHover={{ opacity: 0.12 }}
-      />
-
-      {/* Year */}
-      <div className="absolute top-6 left-6 z-10">
-        <span
-          className="text-xs tracking-widest"
-          style={{ color: "rgba(255,255,255,0.55)", fontFamily: "var(--font)" }}
-        >
-          {project.year}
-        </span>
+    <motion.a ref={ref} href={p.url} target="_blank" rel="noopener noreferrer"
+      initial={{ opacity:0, y:32 }} whileInView={{ opacity:1, y:0 }}
+      viewport={{ once:true, margin:"-80px" }}
+      transition={{ duration:0.8, ease:EASE, delay:(i%2)*0.1 }}
+      className={`group relative overflow-hidden rounded-sm cursor-pointer block ${isLast ? "md:col-span-2" : ""}`}
+      style={{ aspectRatio: isLast ? "16/7" : "4/3" }}
+      onMouseMove={onMove} onMouseLeave={() => { bx.set(0); by.set(0); }}>
+      <motion.div className="absolute" style={{ inset:"-24px", background:p.gradient, x:sbx, y:sby }} />
+      <div className="absolute inset-0" style={{ background:"rgba(0,0,0,0.22)" }} />
+      <div className="absolute bottom-0 left-0 right-0 h-56 pointer-events-none" style={{ background:"linear-gradient(to top,rgba(0,0,0,0.8),transparent)" }} />
+      <div className="absolute top-5 left-5 z-10">
+        <span className="text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-full" style={{ background:"rgba(255,255,255,0.12)", color:"rgba(255,255,255,0.8)", backdropFilter:"blur(8px)" }}>{p.tag}</span>
       </div>
-
-      {/* Arrow — slides in on hover */}
-      <motion.div
-        className="absolute top-6 right-6 z-10"
-        initial={{ opacity: 0, x: 8, y: -8 }}
-        whileHover={{ opacity: 1, x: 0, y: 0 }}
-        transition={{ duration: 0.25 }}
-      >
-        <span className="text-xl" style={{ color: "rgba(255,255,255,0.9)" }}>↗</span>
+      <motion.div className="absolute top-5 right-5 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300" style={{ transform:"translate(6px,-6px)" }}
+        whileHover={{ x:0, y:0 }}>
+        <span className="text-xl" style={{ color:"rgba(255,255,255,0.9)" }}>↗</span>
       </motion.div>
-
-      {/* Scrim */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-52 pointer-events-none z-10"
-        style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75), transparent)" }}
-      />
-
-      {/* Info */}
-      <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
-        <motion.p
-          className="text-xs uppercase tracking-widest mb-2"
-          style={{ color: "rgba(255,255,255,0.5)", fontFamily: "var(--font)" }}
-        >
-          {project.category}
-        </motion.p>
-        <h3
-          className="text-2xl font-light leading-tight"
-          style={{
-            color: "#fff",
-            fontFamily: "var(--font)",
-            letterSpacing: "-0.02em",
-          }}
-        >
-          {project.title}
-        </h3>
+      <div className="absolute bottom-0 left-0 right-0 p-7 z-20">
+        <p className="text-xs uppercase tracking-widest mb-1.5" style={{ color:"rgba(255,255,255,0.5)", fontFamily:"var(--font-body)" }}>{p.category} · {p.year}</p>
+        <h3 className="text-xl md:text-2xl font-semibold leading-tight mb-2" style={{ color:"#fff", fontFamily:"var(--font-display)", letterSpacing:"-0.02em" }}>{p.title}</h3>
+        <p className="text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-w-md" style={{ color:"rgba(255,255,255,0.65)", fontFamily:"var(--font-body)" }}>{p.desc}</p>
       </div>
-    </motion.div>
+    </motion.a>
   );
 }
 
 export default function Work() {
   const { t } = useLang();
-
   return (
-    <section
-      id="work"
-      className="py-24 md:py-40"
-      style={{ borderBottom: "1px solid var(--border)" }}
-    >
+    <section id="work" className="py-24 md:py-40" style={{ borderBottom:"1px solid var(--border)" }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        {/* Animated divider */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9, ease: EASE }}
-          style={{ height: "1px", background: "var(--border)", transformOrigin: "left", marginBottom: "5rem" }}
-        />
-
-        {/* Header */}
-        <div className="flex items-end justify-between mb-16 gap-8 flex-wrap">
+        <motion.div initial={{ scaleX:0 }} whileInView={{ scaleX:1 }} viewport={{ once:true }} transition={{ duration:0.9, ease:EASE }}
+          style={{ height:"1px", background:"var(--border)", transformOrigin:"left", marginBottom:"5rem" }} />
+        <div className="flex items-end justify-between mb-6 gap-8 flex-wrap">
           <div>
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="flex items-center gap-3 mb-5"
-            >
-              <span className="w-5 h-px" style={{ background: "var(--accent)" }} />
-              <span
-                className="text-xs uppercase tracking-[0.2em]"
-                style={{ color: "var(--accent)", fontFamily: "var(--font)" }}
-              >
-                {t.work.label}
-              </span>
+            <motion.div initial={{ opacity:0, y:10 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6 }} className="flex items-center gap-3 mb-5">
+              <span className="w-5 h-px" style={{ background:"var(--accent)" }} />
+              <span className="text-xs uppercase tracking-[0.2em]" style={{ color:"var(--accent)", fontFamily:"var(--font-body)" }}>{t.work.label}</span>
             </motion.div>
-            <div style={{ overflow: "hidden" }}>
-              <motion.h2
-                initial={{ y: "100%", opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, ease: EASE }}
-                className="font-light leading-[1.1]"
-                style={{
-                  fontFamily: "var(--font)",
-                  fontSize: "clamp(22px, 2.8vw, 40px)",
-                  color: "var(--text)",
-                  letterSpacing: "-0.03em",
-                }}
-              >
+            <div style={{ overflow:"hidden" }}>
+              <motion.h2 initial={{ y:"100%",opacity:0 }} whileInView={{ y:0,opacity:1 }} viewport={{ once:true }} transition={{ duration:1,ease:EASE }}
+                className="font-bold leading-[1.05]" style={{ fontFamily:"var(--font-display)", fontSize:"clamp(28px,4vw,54px)", color:"var(--text)", letterSpacing:"-0.03em" }}>
                 {t.work.headline}
               </motion.h2>
             </div>
           </div>
-
-          <motion.a
-            href="#contact"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="group inline-flex items-center gap-2 text-sm"
-            style={{ color: "var(--muted)", fontFamily: "var(--font)" }}
-            whileHover={{ x: 4 }}
-          >
-            {t.work.cta}
-            <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-          </motion.a>
+          <motion.p initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }} transition={{ duration:0.6, delay:0.2 }}
+            className="max-w-xs text-sm leading-relaxed" style={{ color:"var(--muted)", fontFamily:"var(--font-body)" }}>{t.work.sub}</motion.p>
         </div>
-
-        {/* Cards */}
-        <div className="grid md:grid-cols-2 gap-4">
-          {t.work.items.map((project, i) => (
-            <WorkCard key={i} project={project} index={i} />
-          ))}
+        <div className="grid md:grid-cols-2 gap-4 mb-10">
+          {t.work.items.map((p, i) => <WorkCard key={i} p={p} i={i} />)}
         </div>
+        <motion.div initial={{ opacity:0, y:12 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6 }} className="text-center">
+          <a href="#contact" className="inline-flex items-center gap-3 px-8 py-4 rounded-full text-sm font-medium transition-all duration-200"
+            style={{ border:"1px solid var(--border)", color:"var(--text)", fontFamily:"var(--font-body)" }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background="var(--accent)"; (e.currentTarget as HTMLElement).style.borderColor="var(--accent)"; (e.currentTarget as HTMLElement).style.color="#fff"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background="transparent"; (e.currentTarget as HTMLElement).style.borderColor="var(--border)"; (e.currentTarget as HTMLElement).style.color="var(--text)"; }}
+          >{t.work.cta} →</a>
+        </motion.div>
       </div>
     </section>
   );
