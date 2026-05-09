@@ -1,373 +1,247 @@
 "use client";
 import { useRef, useState } from "react";
-import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "motion/react";
+import { motion, useScroll, useMotionValueEvent } from "motion/react";
 import { useLang } from "@/components/LangContext";
 
 const EASE: [number,number,number,number] = [0.22,1,0.36,1];
 
-/* ─── SVG Wireframe: hand-drawn looking skeleton ─── */
-function WireframeMockup({ visible }: { visible: boolean }) {
+/* Returns 0→1 as progress moves from `from` to `to` */
+const lerp01 = (progress: number, from: number, to: number) =>
+  Math.max(0, Math.min(1, (progress - from) / (to - from)));
+
+/* Spring-pop style transform driven by scroll */
+const popStyle = (v: number, yOffset = 16, scaleFrom = 0.88) => ({
+  opacity: v,
+  transform: `translateY(${(1 - v) * yOffset}px) scale(${scaleFrom + v * (1 - scaleFrom)})`,
+  transition: "none",
+});
+
+const slideX = (v: number, xOffset = -24) => ({
+  opacity: v,
+  transform: `translateX(${(1 - v) * xOffset}px)`,
+  transition: "none",
+});
+
+const grow = (v: number) => ({
+  opacity: Math.min(v * 2, 1),
+  transform: `scaleX(${v})`,
+  transformOrigin: "left",
+  transition: "none",
+});
+
+function LiveMockup({ progress }: { progress: number }) {
+  const p = progress;
+  const s = (from: number, to: number) => lerp01(p, from, to);
+
+  const projects = [
+    { title:"GrowIt UY", sub:"E-Commerce · Agriculture", gradient:"linear-gradient(135deg,#081A08,#1A5A1A)" },
+    { title:"JUV Activewear", sub:"E-Commerce · Fashion", gradient:"linear-gradient(135deg,#3D0A00,#B83200)" },
+    { title:"Operal", sub:"Landing Page · Logistics", gradient:"linear-gradient(135deg,#0A1E2E,#1A5A8A)" },
+    { title:"Opertti & Asoc.", sub:"Landing Page · Legal", gradient:"linear-gradient(135deg,#141414,#3A3A3A)" },
+  ];
+
   return (
-    <motion.svg
-      viewBox="0 0 320 220" fill="none" xmlns="http://www.w3.org/2000/svg"
-      className="absolute inset-0 w-full h-full"
-      initial={{ opacity: 0 }} animate={{ opacity: visible ? 1 : 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      {/* Nav bar */}
-      <rect x="0" y="0" width="320" height="24" stroke="var(--border)" strokeWidth="1" />
-      <rect x="8" y="8" width="40" height="8" rx="2" fill="var(--border)" />
-      <rect x="200" y="8" width="20" height="8" rx="2" fill="var(--border)" />
-      <rect x="226" y="8" width="20" height="8" rx="2" fill="var(--border)" />
-      <rect x="252" y="8" width="20" height="8" rx="2" fill="var(--border)" />
-      <rect x="282" y="6" width="30" height="12" rx="6" stroke="var(--border)" strokeWidth="1" />
+    <div className="relative w-full h-full overflow-hidden" style={{ background:"var(--bg)", border:"1px solid var(--border)" }}>
 
-      {/* Hero text lines */}
-      <motion.rect x="16" y="40" width="180" height="14" rx="3" fill="var(--border)"
-        initial={{ scaleX: 0 }} animate={{ scaleX: visible ? 1 : 0 }}
-        style={{ transformOrigin: "left" }} transition={{ duration: 0.7, delay: 0.1 }} />
-      <motion.rect x="16" y="60" width="140" height="14" rx="3" fill="var(--border)"
-        initial={{ scaleX: 0 }} animate={{ scaleX: visible ? 1 : 0 }}
-        style={{ transformOrigin: "left" }} transition={{ duration: 0.7, delay: 0.2 }} />
-      <motion.rect x="16" y="80" width="100" height="14" rx="3" fill="var(--border)"
-        initial={{ scaleX: 0 }} animate={{ scaleX: visible ? 1 : 0 }}
-        style={{ transformOrigin: "left" }} transition={{ duration: 0.7, delay: 0.3 }} />
-      <motion.rect x="16" y="104" width="80" height="8" rx="2" fill="var(--border)"
-        initial={{ scaleX: 0 }} animate={{ scaleX: visible ? 1 : 0 }}
-        style={{ transformOrigin: "left" }} transition={{ duration: 0.6, delay: 0.35 }} />
-      <motion.rect x="16" y="116" width="100" height="8" rx="2" fill="var(--border)"
-        initial={{ scaleX: 0 }} animate={{ scaleX: visible ? 1 : 0 }}
-        style={{ transformOrigin: "left" }} transition={{ duration: 0.6, delay: 0.4 }} />
-      <motion.rect x="16" y="132" width="50" height="18" rx="9" stroke="var(--border)" strokeWidth="1.5"
-        initial={{ opacity: 0 }} animate={{ opacity: visible ? 1 : 0 }} transition={{ duration: 0.5, delay: 0.5 }} />
+      {/* ── Grid overlay ── */}
+      <div className="absolute inset-0 pointer-events-none" style={{
+        opacity: s(0,0.06),
+        backgroundImage:"linear-gradient(rgba(46,95,232,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(46,95,232,0.06) 1px,transparent 1px)",
+        backgroundSize:"32px 32px",
+        transition:"none",
+      }}/>
 
-      {/* Stats row */}
-      <motion.line x1="0" y1="160" x2="320" y2="160" stroke="var(--border)" strokeWidth="1"
-        initial={{ pathLength: 0 }} animate={{ pathLength: visible ? 1 : 0 }} transition={{ duration: 0.8, delay: 0.3 }} />
-      {[0,1,2,3].map(i => (
-        <g key={i}>
-          <rect x={16 + i*78} y="166" width="32" height="10" rx="2" fill="var(--border)" />
-          <rect x={16 + i*78} y="180" width="50" height="6" rx="2" fill="var(--border)" opacity={0.5} />
-        </g>
-      ))}
-
-      {/* Project cards */}
-      <motion.rect x="16" y="196" width="132" height="18" rx="2" stroke="var(--border)" strokeWidth="1"
-        initial={{ opacity: 0 }} animate={{ opacity: visible ? 1 : 0 }} transition={{ duration: 0.5, delay: 0.6 }} />
-      <motion.rect x="156" y="196" width="148" height="18" rx="2" stroke="var(--border)" strokeWidth="1"
-        initial={{ opacity: 0 }} animate={{ opacity: visible ? 1 : 0 }} transition={{ duration: 0.5, delay: 0.7 }} />
-    </motion.svg>
-  );
-}
-
-/* ─── Stage 1: Typography filled in ─── */
-function TypographyMockup({ visible }: { visible: boolean }) {
-  return (
-    <motion.div className="absolute inset-0 flex flex-col"
-      style={{ padding: "0" }}
-      initial={{ opacity: 0 }} animate={{ opacity: visible ? 1 : 0 }} transition={{ duration: 0.6 }}>
-      {/* Nav */}
-      <div className="flex items-center justify-between px-4 py-2 border-b" style={{ borderColor: "var(--border)" }}>
-        <span className="text-xs font-bold" style={{ fontFamily: "var(--font-display)", color: "var(--text)" }}>
-          Build Haus <span style={{ color: "var(--muted)" }}>Studio</span>
-        </span>
-        <div className="flex gap-3">
-          {["Work","Services","Contact"].map(l => (
-            <span key={l} className="text-[9px]" style={{ color: "var(--muted)", fontFamily: "var(--font-body)" }}>{l}</span>
-          ))}
-          <span className="text-[9px] px-2 py-0.5 rounded-full" style={{ border: "1px solid var(--border)", color: "var(--muted)" }}>Book a call</span>
+      {/* ── Navigation ── */}
+      <div className="absolute top-0 left-0 right-0 border-b" style={{ borderColor:"var(--border)", height:"38px", ...popStyle(s(0.06,0.14),-10,0.95) }}>
+        {/* Logo */}
+        <div className="absolute left-5 top-1/2 -translate-y-1/2 flex items-baseline gap-0.5" style={slideX(s(0.10,0.17))}>
+          <span style={{ fontFamily:"var(--font-display)", fontSize:"11px", fontWeight:700, color:"var(--text)" }}>Build Haus </span>
+          <span style={{ fontFamily:"var(--font-display)", fontSize:"11px", fontWeight:700, color:"var(--accent)" }}>Studio</span>
         </div>
-      </div>
-      {/* Hero text */}
-      <div className="flex-1 px-4 pt-5">
-        {["Websites that","turn visits","into clients."].map((line, i) => (
-          <motion.div key={i} initial={{ x: -20, opacity: 0 }}
-            animate={{ x: visible ? 0 : -20, opacity: visible ? 1 : 0 }}
-            transition={{ duration: 0.5, delay: i * 0.12 }}
-            style={{ fontFamily: "var(--font-display)", fontSize: i === 2 ? "20px" : "18px",
-              fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.1,
-              color: i === 2 ? "var(--muted)" : "var(--text)" }}>
-            {line}
-          </motion.div>
-        ))}
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: visible ? 0.6 : 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="mt-2" style={{ fontSize: "7px", color: "var(--muted)", fontFamily: "var(--font-body)", lineHeight: 1.5 }}>
-          Landing pages, e-commerce & web apps for brands<br />that want real results.
-        </motion.p>
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: visible ? 1 : 0, y: visible ? 0 : 8 }}
-          transition={{ duration: 0.4, delay: 0.5 }}
-          className="mt-3 inline-flex px-3 py-1.5 text-[8px] font-medium"
-          style={{ border: "1px solid var(--muted)", color: "var(--muted)", fontFamily: "var(--font-body)" }}>
-          Book a call →
-        </motion.div>
-      </div>
-    </motion.div>
-  );
-}
-
-/* ─── Stage 2: Colors + brand identity ─── */
-function DesignMockup({ visible }: { visible: boolean }) {
-  return (
-    <motion.div className="absolute inset-0 flex flex-col"
-      initial={{ opacity: 0 }} animate={{ opacity: visible ? 1 : 0 }} transition={{ duration: 0.6 }}>
-      {/* Nav */}
-      <div className="flex items-center justify-between px-4 py-2 border-b" style={{ borderColor: "var(--border)" }}>
-        <span className="text-xs font-bold" style={{ fontFamily: "var(--font-display)", color: "var(--text)" }}>
-          Build Haus <span style={{ color: "var(--accent)" }}>Studio</span>
-        </span>
-        <div className="flex gap-3 items-center">
-          {["Work","Services","Contact"].map(l => (
-            <span key={l} className="text-[9px]" style={{ color: "var(--muted)", fontFamily: "var(--font-body)" }}>{l}</span>
-          ))}
-          <motion.span className="text-[9px] px-2 py-0.5 rounded-full text-white"
-            style={{ background: "var(--accent)", fontFamily: "var(--font-body)" }}
-            animate={{ scale: [1, 1.05, 1] }} transition={{ repeat: Infinity, duration: 2 }}>
-            Book a call
-          </motion.span>
-        </div>
-      </div>
-      {/* Hero */}
-      <div className="flex-1 px-4 pt-5 relative overflow-hidden">
-        {/* Gradient orb */}
-        <div className="absolute top-0 right-0 w-20 h-20 rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(ellipse,rgba(46,95,232,0.3),transparent)", filter: "blur(16px)" }} />
-        {["Websites that","turn visits","into clients."].map((line, i) => (
-          <div key={i} style={{ fontFamily: "var(--font-display)", fontSize: "18px", fontWeight: 700,
-            letterSpacing: "-0.03em", lineHeight: 1.1,
-            color: i === 2 ? "var(--accent)" : "var(--text)" }}>
-            {line}
+        {/* Nav links */}
+        {["Work","Services","About"].map((label, i) => (
+          <div key={label} className="absolute top-1/2 -translate-y-1/2"
+            style={{ right:`${120 - i*52}px`, ...slideX(s(0.15 + i*0.03, 0.22 + i*0.03), 16) }}>
+            <span style={{ fontSize:"8px", color:"var(--muted)", fontFamily:"var(--font-body)" }}>{label}</span>
           </div>
         ))}
-        <p className="mt-2" style={{ fontSize: "7px", color: "var(--muted)", fontFamily: "var(--font-body)", lineHeight: 1.5 }}>
-          Landing pages, e-commerce & web apps for brands<br />that want real results.
-        </p>
-        <motion.div className="mt-3 inline-flex px-3 py-1.5 text-[8px] font-medium rounded-none text-white"
-          style={{ background: "var(--accent)", fontFamily: "var(--font-body)" }}
-          whileHover={{ scale: 1.05 }}>
-          Book a call →
-        </motion.div>
-        {/* Grid */}
-        <div className="mt-4 grid grid-cols-3 border-t pt-3 gap-3" style={{ borderColor: "var(--border)" }}>
-          {[["5+","Years"],["20+","Clients"],["100%","Results"]].map(([n,l]) => (
-            <div key={l} className="text-center">
-              <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--text)", fontFamily: "var(--font-display)" }}>{n}</div>
-              <div style={{ fontSize: "6px", color: "var(--muted)", fontFamily: "var(--font-body)" }}>{l}</div>
-            </div>
-          ))}
+        {/* CTA button */}
+        <div className="absolute right-5 top-1/2 -translate-y-1/2 px-3 py-1 rounded-full"
+          style={{ background:"var(--accent)", ...popStyle(s(0.22,0.30),-8,0.8) }}>
+          <span style={{ fontSize:"8px", color:"#fff", fontFamily:"var(--font-body)", whiteSpace:"nowrap" }}>Book a call</span>
         </div>
       </div>
-    </motion.div>
-  );
-}
 
-/* ─── Stage 3: Fully polished ─── */
-function PolishedMockup({ visible }: { visible: boolean }) {
-  return (
-    <motion.div className="absolute inset-0 flex flex-col"
-      initial={{ opacity: 0 }} animate={{ opacity: visible ? 1 : 0 }} transition={{ duration: 0.6 }}>
-      <div className="flex items-center justify-between px-4 py-2 border-b" style={{ borderColor: "var(--border)" }}>
-        <span className="text-xs font-bold" style={{ fontFamily: "var(--font-display)", color: "var(--text)" }}>
-          Build Haus <span style={{ color: "var(--accent)" }}>Studio</span>
-        </span>
-        <div className="flex gap-3 items-center">
-          {["Work","Services","Contact"].map(l => (
-            <span key={l} className="text-[9px]" style={{ color: "var(--muted)", fontFamily: "var(--font-body)" }}>{l}</span>
-          ))}
-          <span className="text-[9px] px-2 py-0.5 rounded-full text-white" style={{ background: "var(--accent)", fontFamily: "var(--font-body)" }}>
-            Book a call
-          </span>
-        </div>
-      </div>
-      <div className="flex-1 px-4 pt-4 relative overflow-hidden">
-        <div className="absolute top-0 right-[-20px] w-32 h-32 rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(ellipse,rgba(46,95,232,0.2),transparent)", filter: "blur(24px)", animation:"pulse-orb 6s ease-in-out infinite" }} />
-        <div className="absolute inset-0 pointer-events-none"
-          style={{ backgroundImage:"linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px)", backgroundSize:"20px 20px" }} />
-        {["Websites that","turn visits","into clients."].map((line, i) => (
-          <div key={i} style={{ fontFamily:"var(--font-display)", fontSize:"18px", fontWeight:700, letterSpacing:"-0.03em", lineHeight:1.05, position:"relative", zIndex:1, color: i===2 ? "var(--accent)" : "var(--text)" }}>{line}</div>
+      {/* ── Hero background gradient ── */}
+      <div className="absolute pointer-events-none" style={{
+        top:"38px", right:"-40px", width:"280px", height:"280px", borderRadius:"50%",
+        background:"radial-gradient(ellipse,rgba(46,95,232,0.22),transparent 70%)",
+        filter:"blur(40px)",
+        opacity: s(0.28,0.38),
+        transition:"none",
+      }}/>
+
+      {/* ── Hero section ── */}
+      <div className="absolute left-5 right-5" style={{ top:"54px" }}>
+        {/* Lines */}
+        {[{text:"Websites that",w:"160px"},{text:"turn visits",w:"130px"},{text:"into clients.",w:"150px",accent:true}].map((line,i)=>(
+          <div key={i} style={{ overflow:"hidden", marginBottom:"3px" }}>
+            <div style={{ ...slideX(s(0.30+i*0.06, 0.38+i*0.06), -20) }}>
+              <span style={{ fontFamily:"var(--font-display)", fontSize:i<2?"20px":"22px", fontWeight:700,
+                letterSpacing:"-0.03em", lineHeight:1.05, color:line.accent?"var(--accent)":"var(--text)" }}>
+                {line.text}
+              </span>
+            </div>
+          </div>
         ))}
-        <p className="mt-2" style={{ fontSize:"7px", color:"var(--muted)", fontFamily:"var(--font-body)", lineHeight:1.5, position:"relative", zIndex:1 }}>
-          Landing pages, e-commerce & web apps for brands<br />that want real results.
-        </p>
-        <div className="mt-2 flex items-center gap-2" style={{ position:"relative", zIndex:1 }}>
-          <span className="inline-flex px-3 py-1.5 text-[8px] font-medium text-white" style={{ background:"var(--accent)", fontFamily:"var(--font-body)" }}>Book a call →</span>
-          <span className="text-[8px]" style={{ color:"var(--muted)", fontFamily:"var(--font-body)" }}>or view work</span>
+        {/* Sub text */}
+        <div style={{ marginTop:"8px", ...popStyle(s(0.46,0.52)) }}>
+          <div style={{ width:"200px", height:"5px", borderRadius:"3px", background:"var(--muted)", opacity:0.3, marginBottom:"3px" }}/>
+          <div style={{ width:"160px", height:"5px", borderRadius:"3px", background:"var(--muted)", opacity:0.2 }}/>
         </div>
-        {/* Stats + cards */}
-        <div className="mt-3 grid grid-cols-3 gap-0 border-t border-b py-2" style={{ borderColor:"var(--border)" }}>
-          {[["5+","Years"],["20+","Clients"],["100%","Results"]].map(([n,l],i) => (
-            <div key={l} className="text-center px-1" style={{ borderRight: i<2 ? "1px solid var(--border)" : "none" }}>
-              <div style={{ fontSize:"10px", fontWeight:700, color:"var(--text)", fontFamily:"var(--font-display)" }}>{n}</div>
-              <div style={{ fontSize:"6px", color:"var(--muted)", fontFamily:"var(--font-body)" }}>{l}</div>
+        {/* CTA */}
+        <div style={{ marginTop:"12px", display:"inline-flex", alignItems:"center", gap:"8px", ...popStyle(s(0.52,0.60),-12,0.75) }}>
+          <div style={{ padding:"8px 16px", background:"var(--accent)" }}>
+            <span style={{ fontSize:"9px", color:"#fff", fontFamily:"var(--font-body)" }}>Book a call →</span>
+          </div>
+          <div style={{ padding:"8px 12px", border:"1px solid var(--border)" }}>
+            <span style={{ fontSize:"9px", color:"var(--muted)", fontFamily:"var(--font-body)" }}>View work</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Stats divider + stats ── */}
+      <div className="absolute left-0 right-0" style={{ top:"215px" }}>
+        <div style={{ height:"1px", background:"var(--border)", ...grow(s(0.60,0.66)) }}/>
+        <div className="grid grid-cols-4" style={{ borderBottom:"1px solid var(--border)" }}>
+          {[["5+","Years"],["20+","Clients"],["20+","Projects"],["100%","Satisfaction"]].map(([n,l],i)=>(
+            <div key={l} className="flex flex-col items-center py-3"
+              style={{ borderRight:i<3?"1px solid var(--border)":"none", ...popStyle(s(0.64+i*0.03,0.70+i*0.03)) }}>
+              <span style={{ fontFamily:"var(--font-display)", fontSize:"16px", fontWeight:700, color:"var(--text)" }}>{n}</span>
+              <span style={{ fontFamily:"var(--font-body)", fontSize:"6px", color:"var(--muted)", textTransform:"uppercase", letterSpacing:"0.1em" }}>{l}</span>
             </div>
           ))}
         </div>
-        <div className="mt-2 grid grid-cols-2 gap-1.5">
-          {[{t:"GrowIt UY",g:"linear-gradient(135deg,#081A08,#1A5A1A)"},{t:"JUV Activewear",g:"linear-gradient(135deg,#3D0A00,#B83200)"}].map((p,i) => (
-            <motion.div key={i} className="relative overflow-hidden" style={{ aspectRatio:"3/2", background:p.g }}
-              whileHover={{ scale:1.02 }} transition={{ duration:0.3 }}>
-              <div className="absolute inset-0" style={{ background:"rgba(0,0,0,0.2)" }} />
-              <div className="absolute bottom-0 left-0 right-0 p-1.5">
-                <div style={{ fontSize:"6px", color:"rgba(255,255,255,0.6)", fontFamily:"var(--font-body)" }}>E-Commerce</div>
-                <div style={{ fontSize:"7px", fontWeight:700, color:"#fff", fontFamily:"var(--font-display)" }}>{p.t}</div>
+      </div>
+
+      {/* ── Project cards ── */}
+      <div className="absolute left-0 right-0" style={{ top:"295px" }}>
+        <div style={{ padding:"0 12px 4px", opacity: s(0.72,0.76) }}>
+          <span style={{ fontSize:"7px", textTransform:"uppercase", letterSpacing:"0.2em", color:"var(--accent)", fontFamily:"var(--font-body)" }}>Selected Work</span>
+        </div>
+        <div className="grid grid-cols-2" style={{ gap:"2px", padding:"0 12px" }}>
+          {projects.map((proj, i)=>(
+            <div key={i} className="relative overflow-hidden"
+              style={{ aspectRatio:"16/9", background:proj.gradient, ...popStyle(s(0.74+i*0.05, 0.80+i*0.05)) }}>
+              <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.2)" }}/>
+              <div style={{ position:"absolute", bottom:0, left:0, right:0, padding:"8px",
+                background:"linear-gradient(to top,rgba(0,0,0,0.7),transparent)" }}>
+                <div style={{ fontSize:"6px", color:"rgba(255,255,255,0.5)", fontFamily:"var(--font-body)" }}>{proj.sub}</div>
+                <div style={{ fontSize:"8px", fontWeight:700, color:"#fff", fontFamily:"var(--font-display)" }}>{proj.title}</div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
-    </motion.div>
+
+      {/* ── Services bar ── */}
+      <div className="absolute left-0 right-0 border-t" style={{ top:"480px", borderColor:"var(--border)", ...popStyle(s(0.88,0.94)) }}>
+        {["01 — Strategy","02 — Design","03 — Build"].map((s2,i)=>(
+          <div key={i} className="inline-flex items-center border-r px-5 py-3" style={{ borderColor:"var(--border)" }}>
+            <span style={{ fontSize:"8px", color:"var(--muted)", fontFamily:"var(--font-body)", fontWeight:500 }}>{s2}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Live cursor dot ── */}
+      <div style={{ position:"absolute", bottom:"20px", right:"20px", ...popStyle(s(0.94,1.0)) }}>
+        <div style={{ display:"flex", alignItems:"center", gap:"6px" }}>
+          <div style={{ width:"6px", height:"6px", borderRadius:"50%", background:"var(--accent)",
+            animation: p > 0.94 ? "pulse-orb 1.5s ease-in-out infinite" : "none" }}/>
+          <div style={{ width:"28px", height:"28px", borderRadius:"50%", border:"1px solid rgba(46,95,232,0.5)" }}/>
+        </div>
+      </div>
+
+      {/* ── "Finished" glow on completion ── */}
+      {p > 0.96 && (
+        <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at 60% 30%,rgba(46,95,232,0.08),transparent 60%)", pointerEvents:"none", animation:"pulse-orb 3s ease-in-out infinite" }}/>
+      )}
+    </div>
   );
 }
 
-/* ─── Main Component ─── */
 export default function BuildShowcase() {
   const { t } = useLang();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [activeStep, setActiveStep] = useState(0);
-  const [mockProgress, setMockProgress] = useState(0);
+  const [prog, setProg] = useState(0);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    setMockProgress(latest);
-    setActiveStep(Math.min(3, Math.floor(latest * 4)));
-  });
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
+  useMotionValueEvent(scrollYProgress, "change", (v) => setProg(v));
 
   const d = t.buildShowcase;
-  const stepColors = ["rgba(46,95,232,0.08)","rgba(46,95,232,0.12)","rgba(46,95,232,0.16)","rgba(46,95,232,0.2)"];
+  const pct = Math.round(prog * 100);
 
   return (
-    <section style={{ borderBottom: "1px solid var(--border)" }}>
-      {/* Intro */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-24 md:py-32">
+    <section style={{ borderBottom:"1px solid var(--border)" }}>
+      {/* Section intro */}
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-20 md:py-28">
         <motion.div initial={{ scaleX:0 }} whileInView={{ scaleX:1 }} viewport={{ once:true }}
           transition={{ duration:0.9, ease:EASE }}
           style={{ height:"1px", background:"var(--border)", transformOrigin:"left", marginBottom:"4rem" }} />
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div style={{ overflow:"hidden" }}>
-            <motion.h2 initial={{ y:"100%",opacity:0 }} whileInView={{ y:0,opacity:1 }}
-              viewport={{ once:true }} transition={{ duration:1, ease:EASE }}
-              className="font-bold leading-[1.05]"
-              style={{ fontFamily:"var(--font-display)", fontSize:"clamp(28px,4vw,52px)", color:"var(--text)", letterSpacing:"-0.03em" }}>
-              {d.intro}
-            </motion.h2>
-          </div>
-          <motion.p initial={{ opacity:0, y:16 }} whileInView={{ opacity:1, y:0 }}
-            viewport={{ once:true }} transition={{ duration:0.8, delay:0.15 }}
-            className="text-base leading-[1.75]" style={{ color:"var(--muted)", fontFamily:"var(--font-body)" }}>
-            {d.introSub}
-          </motion.p>
+        <div className="flex items-center gap-3 mb-8">
+          <span className="w-5 h-px" style={{ background:"var(--accent)" }} />
+          <span className="text-xs uppercase tracking-[0.2em]" style={{ color:"var(--accent)", fontFamily:"var(--font-body)" }}>Build Process</span>
         </div>
+        <div style={{ overflow:"hidden" }}>
+          <motion.h2 initial={{ y:"108%", skewY:3 }} whileInView={{ y:0, skewY:0 }}
+            viewport={{ once:true }} transition={{ duration:1.1, ease:EASE }}
+            className="font-bold" style={{ fontFamily:"var(--font-display)", fontSize:"clamp(28px,4.5vw,60px)", color:"var(--text)", letterSpacing:"-0.03em", lineHeight:1.05 }}>
+            {d.intro}
+          </motion.h2>
+        </div>
+        <motion.p initial={{ opacity:0, y:16 }} whileInView={{ opacity:1, y:0 }}
+          viewport={{ once:true }} transition={{ duration:0.8, delay:0.2 }}
+          className="mt-6 text-base leading-[1.8] max-w-lg" style={{ color:"var(--muted)", fontFamily:"var(--font-body)" }}>
+          {d.introSub}
+        </motion.p>
       </div>
 
-      {/* Scroll-pinned section */}
-      <div ref={containerRef} style={{ height:"380vh", position:"relative" }}>
-        <div style={{ position:"sticky", top:0, height:"100vh", display:"flex", alignItems:"center", overflow:"hidden" }}>
-          <div className="max-w-7xl mx-auto px-6 lg:px-12 w-full">
-            <div className="grid md:grid-cols-[1fr_1.4fr] gap-12 md:gap-20 items-center">
-
-              {/* Left: step copy with AnimatePresence */}
-              <div style={{ position:"relative", minHeight:"280px" }}>
-                <AnimatePresence mode="wait">
-                  <motion.div key={activeStep}
-                    initial={{ y:30, opacity:0, filter:"blur(8px)" }}
-                    animate={{ y:0, opacity:1, filter:"blur(0px)" }}
-                    exit={{ y:-30, opacity:0, filter:"blur(8px)" }}
-                    transition={{ duration:0.5, ease:EASE }}>
-                    <div className="flex items-center gap-3 mb-6">
-                      <span className="text-xs font-bold tabular-nums" style={{ color:"var(--accent)", fontFamily:"var(--font-body)" }}>
-                        {d.steps[activeStep]?.num}
-                      </span>
-                      <div className="flex-1 h-px" style={{ background:`linear-gradient(to right, var(--accent), transparent)` }} />
-                      <span className="text-xs uppercase tracking-[0.2em]" style={{ color:"var(--muted)", fontFamily:"var(--font-body)" }}>
-                        {d.steps[activeStep]?.label}
-                      </span>
-                    </div>
-                    <h3 className="font-bold mb-5"
-                      style={{ fontFamily:"var(--font-display)", fontSize:"clamp(24px,3.5vw,50px)", color:"var(--text)", letterSpacing:"-0.03em", lineHeight:1.05 }}>
-                      {d.steps[activeStep]?.headline}
-                    </h3>
-                    <p className="text-base leading-[1.8]" style={{ color:"var(--muted)", fontFamily:"var(--font-body)", maxWidth:"360px" }}>
-                      {d.steps[activeStep]?.body}
-                    </p>
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Progress steps */}
-                <div className="absolute bottom-0 left-0 flex gap-2 mt-8">
-                  {d.steps.map((_, i) => (
-                    <motion.div key={i}
-                      animate={{ width: i===activeStep ? "32px" : "8px", background: i===activeStep ? "var(--accent)" : "var(--border)" }}
-                      transition={{ duration:0.4, ease:EASE }}
-                      style={{ height:"3px" }} />
-                  ))}
-                </div>
+      {/* ─── SCROLL-PINNED BUILD ─── */}
+      <div ref={containerRef} style={{ height:"500vh" }}>
+        <div style={{ position:"sticky", top:0, height:"100vh", display:"flex", flexDirection:"column", justifyContent:"center" }}>
+          <div className="max-w-5xl mx-auto w-full px-6 lg:px-8 flex flex-col" style={{ height:"90vh" }}>
+            {/* Top bar: progress + label */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <span className="text-xs uppercase tracking-[0.2em]" style={{ color:"var(--muted)", fontFamily:"var(--font-body)" }}>
+                  Building your website
+                </span>
               </div>
+              <div className="flex items-center gap-3">
+                <div className="h-px" style={{ width:"120px", background:"var(--border)", position:"relative" }}>
+                  <div style={{ position:"absolute", inset:0, width:`${pct}%`, background:"var(--accent)", transition:"width 0.1s linear" }}/>
+                </div>
+                <span className="text-xs tabular-nums font-bold" style={{ color:"var(--accent)", fontFamily:"var(--font-body)", minWidth:"32px" }}>
+                  {pct}%
+                </span>
+              </div>
+            </div>
 
-              {/* Right: live animated mockup */}
-              <div>
-                <motion.div
-                  animate={{ background: stepColors[activeStep] || "transparent" }}
-                  transition={{ duration:0.6 }}
-                  className="relative mx-auto"
-                  style={{ maxWidth:"380px" }}>
-                  {/* Browser chrome */}
-                  <div className="border" style={{ borderColor:"var(--border)", background:"var(--bg)" }}>
-                    <div className="flex items-center gap-1.5 px-3 py-2 border-b" style={{ borderColor:"var(--border)" }}>
-                      {[0,1,2].map(i => (
-                        <motion.div key={i} className="w-2.5 h-2.5 rounded-full"
-                          animate={{ background: activeStep >= 2
-                            ? (i===0?"#ff5f57":i===1?"#febc2e":"#28c840")
-                            : "var(--border)" }}
-                          transition={{ duration:0.4, delay:i*0.1 }} />
-                      ))}
-                      <motion.div className="flex-1 mx-2 h-4 rounded-full"
-                        animate={{ background: activeStep>=1 ? "var(--surface)" : "var(--border)", opacity:0.6 }}
-                        transition={{ duration:0.3 }}>
-                        {activeStep >= 1 && (
-                          <div className="h-full flex items-center px-2">
-                            <span style={{ fontSize:"7px", color:"var(--muted)", fontFamily:"var(--font-body)" }}>
-                              buildhausstudio.com
-                            </span>
-                          </div>
-                        )}
-                      </motion.div>
-                    </div>
-
-                    {/* Mockup content — actual stage components */}
-                    <div className="relative" style={{ height:"220px" }}>
-                      <WireframeMockup visible={activeStep === 0} />
-                      <TypographyMockup visible={activeStep === 1} />
-                      <DesignMockup visible={activeStep === 2} />
-                      <PolishedMockup visible={activeStep === 3} />
-                    </div>
-                  </div>
-
-                  {/* Stage label */}
-                  <motion.div
-                    animate={{ opacity: 1 }}
-                    className="absolute -bottom-8 left-0 right-0 flex items-center justify-center gap-2">
-                    <span className="text-xs uppercase tracking-widest" style={{ color:"var(--muted)", fontFamily:"var(--font-body)" }}>
-                      {["Wireframe","Typography","Design","Polished"][activeStep]}
-                    </span>
-                    <div className="flex gap-1">
-                      {[0,1,2,3].map(i => (
-                        <div key={i} className="w-1 h-1 rounded-full" style={{ background: i===activeStep ? "var(--accent)" : "var(--border)" }} />
-                      ))}
-                    </div>
-                  </motion.div>
-                </motion.div>
+            {/* Mockup — fills remaining space */}
+            <div style={{ flex:1, position:"relative" }}>
+              <LiveMockup progress={prog} />
+              {/* Corner labels */}
+              <div style={{ position:"absolute", bottom:"-24px", left:0 }}>
+                <span style={{ fontSize:"9px", color:"var(--muted)", fontFamily:"var(--font-body)", textTransform:"uppercase", letterSpacing:"0.15em" }}>
+                  {prog < 0.25 ? "↳ Structure" : prog < 0.5 ? "↳ Design" : prog < 0.75 ? "↳ Content" : "↳ Polish"}
+                </span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Reveal */}
+      {/* Reveal section */}
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-24 text-center">
         <motion.p initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }}
           viewport={{ once:true }} transition={{ duration:0.8 }}
@@ -376,6 +250,14 @@ export default function BuildShowcase() {
           <span style={{ color:"var(--text)", fontWeight:600 }}>{d.reveal.split(".")[0]}.</span>
           {" "}{d.reveal.split(".").slice(1).join(".")}
         </motion.p>
+        <motion.a href="#work" initial={{ opacity:0, y:12 }} whileInView={{ opacity:1, y:0 }}
+          viewport={{ once:true }} transition={{ duration:0.6, delay:0.2 }}
+          className="inline-flex items-center gap-3 mt-10 px-8 py-4 text-sm font-medium"
+          style={{ border:"1px solid var(--border)", color:"var(--text)", fontFamily:"var(--font-body)" }}
+          onMouseEnter={e=>{const el=e.currentTarget as HTMLElement;el.style.background="var(--accent)";el.style.borderColor="var(--accent)";el.style.color="#fff";}}
+          onMouseLeave={e=>{const el=e.currentTarget as HTMLElement;el.style.background="transparent";el.style.borderColor="var(--border)";el.style.color="var(--text)";}}>
+          See the real work →
+        </motion.a>
       </div>
     </section>
   );
