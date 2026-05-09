@@ -57,7 +57,7 @@ export default function Hero() {
           {[t.hero.line1, t.hero.line2, t.hero.line3].map((line, i) => (
             <div key={i} style={{ overflow:"hidden" }}>
               <motion.h1 variants={lineVar}
-                style={{ fontFamily:"var(--font-display)", fontSize:"clamp(56px,10.5vw,140px)", fontWeight:700, letterSpacing:"-0.04em", lineHeight:0.97, color:i===2?"var(--accent)":"var(--text)" }}>
+                style={{ fontFamily:"var(--font-display)", fontSize:"clamp(52px,10vw,132px)", fontWeight:700, letterSpacing:"-0.04em", lineHeight:0.97, color:i===2?"var(--accent)":"var(--text)" }}>
                 {line}
               </motion.h1>
             </div>
