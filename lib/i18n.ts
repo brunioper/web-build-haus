@@ -10,13 +10,13 @@ export const dict = {
       cta: "Start a project",
     },
     hero: {
-      label: "Web Design Studio",
-      line1: "We build digital",
+      location: "Based in Montevideo, Uruguay",
+      line1: "We design digital",
       line2: "experiences that",
       line3: "move people.",
       sub: "Premium websites and web applications for brands that demand more.",
       cta: "Start a project",
-      scroll: "Scroll to explore",
+      scroll: "Scroll",
     },
     marquee: [
       "Web Design",
@@ -30,18 +30,19 @@ export const dict = {
     ],
     stats: [
       { value: 5, suffix: "+", label: "Years of experience" },
-      { value: 25, suffix: "+", label: "Clients served" },
-      { value: 50, suffix: "+", label: "Projects delivered" },
+      { value: 20, suffix: "+", label: "Clients served" },
+      { value: 20, suffix: "+", label: "Projects delivered" },
       { value: 100, suffix: "%", label: "Client satisfaction" },
     ],
     about: {
       label: "About us",
-      headline: "Design is the bridge between vision and reality.",
+      headline: "A design studio obsessed with craft.",
       body1:
-        "We are a web design studio obsessed with craft. Every pixel intentional, every interaction purposeful. Since 2019, we've helped brands across industries build digital products that convert visitors into loyal clients.",
+        "We are Build Haus Studio, a web design and development studio based in Montevideo, Uruguay. Since 2019, we have helped brands across Latin America and beyond build digital products that convert visitors into loyal clients.",
       body2:
-        "From early-stage startups to established businesses, we bring the same attention to detail, the same drive for quality, and the same commitment to results.",
+        "Every project begins with understanding your business — your goals, your audience, your voice. Then we design and build with precision, care, and an eye for what actually moves people.",
       cta: "Our story",
+      location: "Montevideo, Uruguay",
     },
     services: {
       label: "What we do",
@@ -113,6 +114,7 @@ export const dict = {
     },
     footer: {
       tagline: "Crafting digital experiences since 2019.",
+      location: "Montevideo, Uruguay",
       rights: "All rights reserved.",
       nav: ["Work", "Services", "About", "Contact"],
     },
@@ -126,8 +128,8 @@ export const dict = {
       cta: "Iniciar proyecto",
     },
     hero: {
-      label: "Estudio de Diseño Web",
-      line1: "Creamos experiencias",
+      location: "Con base en Montevideo, Uruguay",
+      line1: "Diseñamos experiencias",
       line2: "digitales que",
       line3: "conectan.",
       sub: "Sitios web y aplicaciones premium para marcas que exigen más.",
@@ -146,18 +148,19 @@ export const dict = {
     ],
     stats: [
       { value: 5, suffix: "+", label: "Años de experiencia" },
-      { value: 25, suffix: "+", label: "Clientes atendidos" },
-      { value: 50, suffix: "+", label: "Proyectos entregados" },
+      { value: 20, suffix: "+", label: "Clientes atendidos" },
+      { value: 20, suffix: "+", label: "Proyectos entregados" },
       { value: 100, suffix: "%", label: "Satisfacción del cliente" },
     ],
     about: {
       label: "Quiénes somos",
-      headline: "El diseño es el puente entre la visión y la realidad.",
+      headline: "Un estudio de diseño obsesionado con el detalle.",
       body1:
-        "Somos un estudio de diseño web obsesionado con el detalle. Cada píxel intencional, cada interacción con propósito. Desde 2019, ayudamos a marcas de distintos rubros a construir productos digitales que convierten visitantes en clientes fieles.",
+        "Somos Build Haus Studio, un estudio de diseño y desarrollo web con base en Montevideo, Uruguay. Desde 2019, ayudamos a marcas de toda América Latina y el mundo a construir productos digitales que convierten visitantes en clientes fieles.",
       body2:
-        "Desde startups hasta empresas consolidadas, aportamos el mismo nivel de detalle, la misma búsqueda de calidad y el mismo compromiso con los resultados.",
+        "Cada proyecto comienza con entender tu negocio: tus objetivos, tu audiencia, tu voz. Luego diseñamos y desarrollamos con precisión, cuidado y enfoque en lo que realmente conecta con las personas.",
       cta: "Nuestra historia",
+      location: "Montevideo, Uruguay",
     },
     services: {
       label: "Lo que hacemos",
@@ -169,7 +172,7 @@ export const dict = {
         },
         {
           title: "Desarrollo",
-          desc: "Código limpio y performante con Next.js, React y stacks modernos que escalan con tu crecimiento.",
+          desc: "Código limpio y performante con Next.js, React y stacks modernos que escalan.",
         },
         {
           title: "Branding",
@@ -229,6 +232,7 @@ export const dict = {
     },
     footer: {
       tagline: "Creando experiencias digitales desde 2019.",
+      location: "Montevideo, Uruguay",
       rights: "Todos los derechos reservados.",
       nav: ["Proyectos", "Servicios", "Nosotros", "Contacto"],
     },

@@ -12,10 +12,9 @@ function Counter({ value, suffix }: { value: number; suffix: string }) {
   useEffect(() => {
     if (!isInView) return;
     const start = performance.now();
-    const duration = 1800;
+    const duration = 2000;
     const raf = (now: number) => {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
+      const progress = Math.min((now - start) / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
       setDisplay(Math.floor(eased * value));
       if (progress < 1) requestAnimationFrame(raf);
@@ -35,31 +34,39 @@ export default function Stats() {
   const { t } = useLang();
 
   return (
-    <section className="py-24 md:py-32" style={{ borderBottom: "1px solid var(--border)" }}>
+    <section
+      className="py-20 md:py-28"
+      style={{ borderBottom: "1px solid var(--border)" }}
+    >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4">
           {t.stats.map((stat, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.7, ease: "easeOut", delay: i * 0.1 }}
-              className="flex flex-col gap-2"
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.7, delay: i * 0.08 }}
+              className="flex flex-col gap-3 py-8 md:py-0"
+              style={{
+                borderRight: i < 3 ? "1px solid var(--border)" : "none",
+                paddingLeft: i === 0 ? 0 : "2rem",
+                paddingRight: "2rem",
+              }}
             >
               <p
-                className="text-5xl md:text-6xl font-bold leading-none"
+                className="text-5xl md:text-6xl font-light leading-none"
                 style={{
-                  fontFamily: "var(--font-display)",
+                  fontFamily: "var(--font)",
                   color: "var(--text)",
-                  letterSpacing: "-0.03em",
+                  letterSpacing: "-0.04em",
                 }}
               >
                 <Counter value={stat.value} suffix={stat.suffix} />
               </p>
               <p
-                className="text-sm leading-snug"
-                style={{ color: "var(--muted)", fontFamily: "var(--font-body)" }}
+                className="text-xs uppercase tracking-widest"
+                style={{ color: "var(--muted)", fontFamily: "var(--font)" }}
               >
                 {stat.label}
               </p>

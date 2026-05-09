@@ -8,24 +8,24 @@ export default function Marquee() {
 
   return (
     <div
-      className="relative overflow-hidden py-5 border-y"
-      style={{ borderColor: "var(--border)" }}
+      className="relative overflow-hidden py-4 border-y"
+      style={{ borderColor: "var(--border)", background: "var(--surface)" }}
     >
       <div
-        className="flex gap-0 whitespace-nowrap"
+        className="flex whitespace-nowrap"
         style={{
-          animation: "marquee-scroll 28s linear infinite",
+          animation: "marquee-scroll 30s linear infinite",
           width: "max-content",
         }}
       >
         {items.map((item, i) => (
           <span
             key={i}
-            className="inline-flex items-center gap-8 px-8 text-sm font-medium uppercase tracking-widest"
-            style={{ color: "var(--muted)", fontFamily: "var(--font-body)" }}
+            className="inline-flex items-center gap-7 px-7 text-xs uppercase tracking-[0.18em] font-medium"
+            style={{ color: "var(--muted)", fontFamily: "var(--font)" }}
           >
             {item}
-            <span style={{ color: "var(--accent)" }}>·</span>
+            <span style={{ color: "var(--accent)", fontSize: "8px" }}>●</span>
           </span>
         ))}
       </div>

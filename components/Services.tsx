@@ -4,6 +4,8 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { useLang } from "@/components/LangContext";
 
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
 export default function Services() {
   const { t } = useLang();
   const [hovered, setHovered] = useState<number | null>(null);
@@ -15,73 +17,73 @@ export default function Services() {
       style={{ borderBottom: "1px solid var(--border)" }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        {/* Label */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center gap-3 mb-8"
-        >
-          <span className="w-6 h-px" style={{ background: "var(--accent)" }} />
-          <span
-            className="text-xs uppercase tracking-[0.2em]"
-            style={{ color: "var(--accent)", fontFamily: "var(--font-body)" }}
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-20 pb-6" style={{ borderBottom: "1px solid var(--border)" }}>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="flex items-center gap-3"
           >
-            {t.services.label}
-          </span>
-        </motion.div>
+            <span className="w-5 h-px" style={{ background: "var(--accent)" }} />
+            <span
+              className="text-xs uppercase tracking-[0.2em]"
+              style={{ color: "var(--accent)", fontFamily: "var(--font)" }}
+            >
+              {t.services.label}
+            </span>
+          </motion.div>
 
-        {/* Headline */}
-        <motion.h2
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-20 max-w-xl leading-[1.1] font-bold"
-          style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "clamp(28px, 3.5vw, 48px)",
-            color: "var(--text)",
-            letterSpacing: "-0.03em",
-          }}
-        >
-          {t.services.headline}
-        </motion.h2>
+          <div style={{ overflow: "hidden" }}>
+            <motion.h2
+              initial={{ y: "100%", opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, ease: EASE }}
+              className="font-light leading-[1.1]"
+              style={{
+                fontFamily: "var(--font)",
+                fontSize: "clamp(24px, 3vw, 42px)",
+                color: "var(--text)",
+                letterSpacing: "-0.03em",
+              }}
+            >
+              {t.services.headline}
+            </motion.h2>
+          </div>
+        </div>
 
-        {/* Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px" style={{ background: "var(--border)" }}>
+        {/* Service rows */}
+        <div>
           {t.services.items.map((service, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.6, delay: (i % 3) * 0.1 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.6, delay: i * 0.07 }}
               onMouseEnter={() => setHovered(i)}
               onMouseLeave={() => setHovered(null)}
-              className="relative p-8 flex flex-col gap-4 transition-colors duration-300 cursor-default"
+              className="group grid grid-cols-[auto_1fr_auto] md:grid-cols-[64px_1fr_2fr_auto] items-center gap-6 py-7 cursor-default transition-colors duration-300"
               style={{
-                background: hovered === i ? "var(--surface)" : "var(--bg)",
+                borderBottom: "1px solid var(--border)",
+                background: hovered === i ? "var(--surface)" : "transparent",
               }}
             >
               {/* Number */}
               <span
-                className="text-xs font-medium"
-                style={{
-                  color: hovered === i ? "var(--accent)" : "var(--muted)",
-                  fontFamily: "var(--font-body)",
-                  transition: "color 0.3s",
-                }}
+                className="text-xs font-medium tabular-nums"
+                style={{ color: "var(--muted)", fontFamily: "var(--font)" }}
               >
                 {String(i + 1).padStart(2, "0")}
               </span>
 
               {/* Title */}
               <h3
-                className="text-xl font-semibold"
+                className="text-xl md:text-2xl font-light"
                 style={{
-                  fontFamily: "var(--font-display)",
+                  fontFamily: "var(--font)",
                   color: "var(--text)",
                   letterSpacing: "-0.02em",
                 }}
@@ -89,21 +91,21 @@ export default function Services() {
                 {service.title}
               </h3>
 
-              {/* Description */}
+              {/* Description — hidden on mobile, shown on md+ */}
               <p
-                className="text-sm leading-relaxed flex-1"
-                style={{ color: "var(--muted)", fontFamily: "var(--font-body)" }}
+                className="hidden md:block text-sm leading-relaxed"
+                style={{ color: "var(--muted)", fontFamily: "var(--font)" }}
               >
                 {service.desc}
               </p>
 
               {/* Arrow */}
               <span
-                className="text-lg transition-all duration-300"
+                className="text-base transition-all duration-300"
                 style={{
                   color: "var(--accent)",
                   opacity: hovered === i ? 1 : 0,
-                  transform: hovered === i ? "translate(0,0)" : "translate(-8px, 8px)",
+                  transform: hovered === i ? "translate(0,0)" : "translate(-8px,8px)",
                 }}
               >
                 ↗

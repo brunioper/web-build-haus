@@ -9,44 +9,41 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer
-      className="py-12 md:py-16"
-      style={{ borderTop: "1px solid var(--border)" }}
-    >
+    <footer className="py-10 md:py-14">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
-          {/* Logo + tagline */}
+          {/* Logo + location */}
           <div className="flex flex-col gap-1">
-            <a href="#" className="inline-flex" aria-label="Build Haus Studio">
+            <a href="#" className="inline-flex items-baseline">
               <span
-                className="text-base font-bold tracking-tight"
-                style={{ fontFamily: "var(--font-display)", color: "var(--text)" }}
+                className="text-sm font-bold"
+                style={{ color: "var(--text)", fontFamily: "var(--font)" }}
               >
                 Build Haus{" "}
               </span>
               <span
-                className="text-base font-bold tracking-tight"
-                style={{ fontFamily: "var(--font-display)", color: "var(--accent)" }}
+                className="text-sm font-bold"
+                style={{ color: "var(--accent)", fontFamily: "var(--font)" }}
               >
                 Studio
               </span>
             </a>
             <p
               className="text-xs"
-              style={{ color: "var(--muted)", fontFamily: "var(--font-body)" }}
+              style={{ color: "var(--muted)", fontFamily: "var(--font)" }}
             >
-              {t.footer.tagline}
+              {t.footer.location} · {t.footer.tagline}
             </p>
           </div>
 
-          {/* Nav links */}
+          {/* Nav */}
           <nav className="flex flex-wrap gap-6">
             {t.footer.nav.map((label, i) => (
               <a
                 key={i}
                 href={navHrefs[i]}
-                className="text-sm transition-colors duration-200"
-                style={{ color: "var(--muted)", fontFamily: "var(--font-body)" }}
+                className="text-xs uppercase tracking-widest transition-colors duration-200"
+                style={{ color: "var(--muted)", fontFamily: "var(--font)" }}
                 onMouseEnter={(e) =>
                   ((e.target as HTMLElement).style.color = "var(--text)")
                 }
@@ -62,7 +59,7 @@ export default function Footer() {
           {/* Copyright */}
           <p
             className="text-xs"
-            style={{ color: "var(--muted)", fontFamily: "var(--font-body)" }}
+            style={{ color: "var(--muted)", fontFamily: "var(--font)" }}
           >
             © {year} Build Haus Studio. {t.footer.rights}
           </p>

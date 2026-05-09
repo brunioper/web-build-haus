@@ -49,7 +49,7 @@ export default function Cursor() {
       <div
         ref={ringRef}
         className="cursor-ring fixed top-0 left-0 w-9 h-9 rounded-full pointer-events-none z-[9998]"
-        style={{ border: "1px solid rgba(46,95,232,0.5)" }}
+        style={{ border: "1px solid rgba(46,95,232,0.4)" }}
       />
     </>
   );
