@@ -1,13 +1,11 @@
 import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
+import HeroV2 from "@/components/HeroV2";
 import Marquee from "@/components/Marquee";
-import Stats from "@/components/Stats";
-import BuildShowcase from "@/components/BuildShowcase";
-import Work from "@/components/Work";
+import BuildStory from "@/components/BuildStory";
+import PortfolioReel from "@/components/PortfolioReel";
 import Services from "@/components/Services";
-import Process from "@/components/Process";
-import Technologies from "@/components/Technologies";
 import About from "@/components/About";
+import Stats from "@/components/Stats";
 import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -17,16 +15,29 @@ export default function Page() {
     <>
       <Navbar />
       <main>
-        <Hero />
+        {/* 00 — Invitation */}
+        <HeroV2 />
+
+        {/* small breath: tech marquee */}
         <Marquee />
-        <Stats />
-        <BuildShowcase />
-        <Work />
+
+        {/* 01 — The Build (centerpiece, scroll-driven) */}
+        <BuildStory />
+
+        {/* 02 — Portfolio reveal (the just-built site shows real work) */}
+        <PortfolioReel />
+
+        {/* 03 — Services */}
         <Services />
-        <Process />
-        <Technologies />
+
+        {/* 04 — Studio (about + stats) */}
         <About />
+        <Stats />
+
+        {/* 05 — Questions */}
         <FAQ />
+
+        {/* 06 — Contact */}
         <Contact />
       </main>
       <Footer />

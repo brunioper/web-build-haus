@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/ThemeContext";
 import Cursor from "@/components/Cursor";
 import PageIntro from "@/components/PageIntro";
 import SmoothScroll from "@/components/SmoothScroll";
+import { FluidCursorBlob } from "@/components/ui";
 
 const spaceGrotesk = Space_Grotesk({ subsets:["latin"], variable:"--font-display", weight:["300","400","500","600","700"] });
 const inter = Inter({ subsets:["latin"], variable:"--font-body", weight:["300","400","500"] });
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <SmoothScroll>
               <PageIntro />
               <Cursor />
+              <FluidCursorBlob />
               {children}
             </SmoothScroll>
           </LangProvider>
