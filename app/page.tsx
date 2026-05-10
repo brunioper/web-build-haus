@@ -1,7 +1,6 @@
 import Navbar from "@/components/Navbar";
-import HeroV2 from "@/components/HeroV2";
-import Marquee from "@/components/Marquee";
-import BuildStory from "@/components/BuildStory";
+import MacbookHero from "@/components/MacbookHero";
+import ChapterStory from "@/components/ChapterStory";
 import PortfolioReel from "@/components/PortfolioReel";
 import Services from "@/components/Services";
 import About from "@/components/About";
@@ -15,29 +14,27 @@ export default function Page() {
     <>
       <Navbar />
       <main>
-        {/* 00 — Invitation */}
-        <HeroV2 />
+        {/* 00 — The hero IS the laptop. Full-bleed, slow, cinematic. */}
+        <MacbookHero />
 
-        {/* small breath: tech marquee */}
-        <Marquee />
+        {/* 01–05 — The build, told as five full-screen chapters that
+            assemble themselves while you scroll. */}
+        <ChapterStory />
 
-        {/* 01 — The Build (centerpiece, scroll-driven) */}
-        <BuildStory />
-
-        {/* 02 — Portfolio reveal (the just-built site shows real work) */}
+        {/* 06 — Portfolio reveal */}
         <PortfolioReel />
 
-        {/* 03 — Services */}
+        {/* 07 — Services */}
         <Services />
 
-        {/* 04 — Studio (about + stats) */}
+        {/* 08 — Studio */}
         <About />
         <Stats />
 
-        {/* 05 — Questions */}
+        {/* 09 — Questions */}
         <FAQ />
 
-        {/* 06 — Contact */}
+        {/* 10 — Contact */}
         <Contact />
       </main>
       <Footer />
