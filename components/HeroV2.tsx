@@ -1,64 +1,21 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { useLang } from "@/components/LangContext";
 import { BigType, ChapterLabel, PressButton, ScrollCue } from "@/components/ui";
 import TimeDisplay from "@/components/TimeDisplay";
 
-/* Subtle background — Blender hero loop, masked + screen-blended */
+/* Subtle ambient gradient (no video) — keeps Hero quiet so the MacBook reveal lands */
 function HeroAccent() {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mq.matches);
-    const fn = () => setReduced(mq.matches);
-    mq.addEventListener("change", fn);
-    return () => mq.removeEventListener("change", fn);
-  }, []);
-
-  if (reduced) {
-    return (
-      <div
-        className="absolute inset-0 -z-10 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 55% at 78% 35%, rgba(46,95,232,0.22), transparent 60%)",
-        }}
-      />
-    );
-  }
-
   return (
-    <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden">
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="metadata"
-        poster="/hero-loop-poster.jpg"
-        aria-hidden
-        className="absolute right-[-8vw] top-[-4vh] h-[110vh] w-[78vw] max-w-[1400px] object-cover"
-        style={{
-          mixBlendMode: "screen",
-          opacity: 0.9,
-          maskImage:
-            "radial-gradient(ellipse 75% 70% at 65% 50%, black 35%, transparent 78%)",
-          WebkitMaskImage:
-            "radial-gradient(ellipse 75% 70% at 65% 50%, black 35%, transparent 78%)",
-        }}
-      >
-        <source src="/hero-loop.webm" type="video/webm" />
-        <source src="/hero-loop.mp4" type="video/mp4" />
-      </video>
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(90deg, var(--bg) 0%, rgba(10,10,15,0.78) 28%, rgba(10,10,15,0.45) 55%, transparent 88%)",
-        }}
-      />
-    </div>
+    <div
+      className="absolute inset-0 -z-10 pointer-events-none"
+      aria-hidden
+      style={{
+        background:
+          "radial-gradient(ellipse 60% 55% at 78% 30%, rgba(46,95,232,0.16), transparent 62%)," +
+          "radial-gradient(ellipse 70% 50% at 15% 85%, rgba(46,95,232,0.06), transparent 60%)",
+      }}
+    />
   );
 }
 
