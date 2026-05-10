@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring, type Variants } from "motion/react";
 import { useLang } from "@/components/LangContext";
 import TimeDisplay from "@/components/TimeDisplay";
@@ -7,6 +7,45 @@ import TimeDisplay from "@/components/TimeDisplay";
 const EASE: [number,number,number,number] = [0.22,1,0.36,1];
 const lineVar: Variants = { hidden:{y:"108%",skewY:4,opacity:0}, show:{y:0,skewY:0,opacity:1,transition:{duration:1.1,ease:EASE}} };
 const container: Variants = { hidden:{}, show:{transition:{staggerChildren:0.15,delayChildren:0.2}} };
+
+/* 3D Blender hero loop — only loads when WebGL/video is supported and motion is allowed */
+function BlenderHeroLoop() {
+  const ref = useRef<HTMLVideoElement>(null);
+  const [reduced, setReduced] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const fn = () => setReduced(mq.matches);
+    mq.addEventListener("change", fn);
+    return () => mq.removeEventListener("change", fn);
+  }, []);
+
+  if (reduced) {
+    return (
+      <div className="absolute inset-0 -z-10 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse 70% 55% at 75% 30%, rgba(46,95,232,0.18), transparent 60%)" }} />
+    );
+  }
+
+  return (
+    <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden">
+      <video
+        ref={ref}
+        autoPlay loop muted playsInline preload="metadata"
+        poster="/hero-loop-poster.jpg"
+        aria-hidden="true"
+        className="absolute right-0 top-0 h-full w-[70vw] max-w-[1200px] object-cover"
+        style={{ mixBlendMode: "screen", opacity: 0.85, maskImage: "radial-gradient(ellipse 80% 70% at 70% 45%, black 35%, transparent 75%)", WebkitMaskImage: "radial-gradient(ellipse 80% 70% at 70% 45%, black 35%, transparent 75%)" }}>
+        <source src="/hero-loop.webm" type="video/webm" />
+        <source src="/hero-loop.mp4"  type="video/mp4" />
+      </video>
+      {/* subtle dark gradient on left for headline contrast */}
+      <div className="absolute inset-0"
+        style={{ background: "linear-gradient(90deg, var(--bg) 0%, rgba(10,10,15,0.85) 25%, rgba(10,10,15,0.55) 50%, transparent 80%)" }} />
+    </div>
+  );
+}
 
 /* Pre-defined floating particles — deterministic to avoid hydration issues */
 const PARTICLES = [
@@ -68,6 +107,9 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-screen flex flex-col justify-between overflow-hidden">
+      {/* 3D Blender background loop */}
+      <BlenderHeroLoop />
+
       {/* SVG accent shape */}
       <AccentShape />
 

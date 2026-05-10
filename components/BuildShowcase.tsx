@@ -1,10 +1,102 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useScroll, useMotionValueEvent } from "motion/react";
 import { motion } from "motion/react";
 import { useLang } from "@/components/LangContext";
 
 const EASE: [number,number,number,number] = [0.22,1,0.36,1];
+
+/* ---------------------------------------------------------------
+   BlenderBuildVideo — 3D rendered teaser of a website assembling
+   itself, scrubbed by scroll position once in view, otherwise loops.
+--------------------------------------------------------------- */
+function BlenderBuildVideo() {
+  const wrap = useRef<HTMLDivElement>(null);
+  const video = useRef<HTMLVideoElement>(null);
+  const [reduced, setReduced] = useState(false);
+  const [scrub, setScrub] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const fn = () => setReduced(mq.matches);
+    mq.addEventListener("change", fn);
+    return () => mq.removeEventListener("change", fn);
+  }, []);
+
+  useEffect(() => {
+    if (reduced) return;
+    const v = video.current!;
+    const w = wrap.current!;
+    let raf = 0;
+
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const r = w.getBoundingClientRect();
+        const vh = window.innerHeight;
+        // 0..1 across element entering/leaving viewport
+        const p = Math.max(0, Math.min(1, (vh - r.top) / (vh + r.height)));
+        if (p > 0.05 && p < 0.95) {
+          if (!scrub) setScrub(true);
+          v.pause();
+          if (v.duration) v.currentTime = Math.min(v.duration - 0.05, p * v.duration);
+        } else {
+          if (scrub) setScrub(false);
+          if (v.paused) v.play().catch(() => {});
+        }
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => { window.removeEventListener("scroll", onScroll); cancelAnimationFrame(raf); };
+  }, [reduced, scrub]);
+
+  if (reduced) {
+    return (
+      <div className="relative w-full aspect-[16/9] overflow-hidden"
+        style={{ border: "1px solid var(--border)", background: "var(--surface)" }}>
+        <picture>
+          <img src="/build-itself-poster.jpg" alt="Website building itself"
+            className="w-full h-full object-cover" />
+        </picture>
+      </div>
+    );
+  }
+
+  return (
+    <div ref={wrap} className="relative w-full aspect-[16/9] overflow-hidden"
+      style={{ border: "1px solid var(--border)", background: "var(--surface)" }}>
+      <video
+        ref={video}
+        autoPlay loop muted playsInline preload="metadata"
+        poster="/build-itself-poster.jpg"
+        aria-label="3D animation of a website building itself"
+        className="absolute inset-0 w-full h-full object-cover">
+        <source src="/build-itself.webm" type="video/webm" />
+        <source src="/build-itself.mp4"  type="video/mp4" />
+      </video>
+      {/* subtle vignette */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse 80% 70% at 50% 50%, transparent 60%, rgba(10,10,15,0.55) 100%)" }} />
+      {/* status pill */}
+      <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5"
+        style={{ background: "rgba(10,10,15,0.55)", border: "1px solid var(--border)", backdropFilter: "blur(8px)" }}>
+        <span className="inline-block w-1.5 h-1.5 rounded-full"
+          style={{ background: "var(--accent)", boxShadow: "0 0 12px var(--accent)" }} />
+        <span className="text-[10px] uppercase tracking-[0.18em]"
+          style={{ color: "var(--text)", fontFamily: "var(--font-body)" }}>
+          {scrub ? "Scrubbing • scroll-driven" : "Build sequence • live"}
+        </span>
+      </div>
+      {/* corner badge */}
+      <div className="absolute bottom-4 right-4 text-[10px] uppercase tracking-[0.2em]"
+        style={{ color: "var(--muted)", fontFamily: "var(--font-body)" }}>
+        Rendered in Blender · 24 fps
+      </div>
+    </div>
+  );
+}
 
 /* Snap: element is either fully hidden or plays a pop-in animation */
 const snap = (prog: number, t: number): React.CSSProperties =>
@@ -231,24 +323,46 @@ export default function BuildShowcase() {
         <motion.div initial={{ scaleX:0 }} whileInView={{ scaleX:1 }} viewport={{ once:true }}
           transition={{ duration:0.9, ease:EASE }}
           style={{ height:"1px", background:"var(--border)", transformOrigin:"left", marginBottom:"4rem" }} />
-        <div className="flex items-center gap-3 mb-6">
-          <span className="w-5 h-px" style={{ background:"var(--accent)" }} />
-          <span className="text-xs uppercase tracking-[0.2em]" style={{ color:"var(--accent)", fontFamily:"var(--font-body)" }}>
-            Build Process
-          </span>
+
+        <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] gap-12 md:gap-16 items-end">
+          {/* Left: copy */}
+          <div>
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-5 h-px" style={{ background:"var(--accent)" }} />
+              <span className="text-xs uppercase tracking-[0.2em]" style={{ color:"var(--accent)", fontFamily:"var(--font-body)" }}>
+                Build Process · 3D
+              </span>
+            </div>
+            <div style={{ overflow:"hidden" }}>
+              <motion.h2 initial={{ y:"108%",skewY:3 }} whileInView={{ y:0,skewY:0 }}
+                viewport={{ once:true }} transition={{ duration:1.1, ease:EASE }}
+                className="font-bold" style={{ fontFamily:"var(--font-display)", fontSize:"clamp(28px,4.5vw,58px)", color:"var(--text)", letterSpacing:"-0.03em", lineHeight:1.05 }}>
+                {d.intro}
+              </motion.h2>
+            </div>
+            <motion.p initial={{ opacity:0, y:14 }} whileInView={{ opacity:1, y:0 }}
+              viewport={{ once:true }} transition={{ duration:0.8, delay:0.2 }}
+              className="mt-5 text-base leading-[1.8] max-w-lg" style={{ color:"var(--muted)", fontFamily:"var(--font-body)" }}>
+              {d.introSub}
+            </motion.p>
+          </div>
+
+          {/* Right: 3D Blender video */}
+          <motion.div initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }}
+            viewport={{ once:true }} transition={{ duration:0.9, ease:EASE }}>
+            <BlenderBuildVideo />
+            <div className="mt-3 flex items-center justify-between">
+              <span className="text-[10px] uppercase tracking-[0.22em]"
+                style={{ color:"var(--muted)", fontFamily:"var(--font-body)" }}>
+                ↳ Each stage extrudes from the grid
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.22em]"
+                style={{ color:"var(--accent)", fontFamily:"var(--font-body)" }}>
+                Scroll to scrub →
+              </span>
+            </div>
+          </motion.div>
         </div>
-        <div style={{ overflow:"hidden" }}>
-          <motion.h2 initial={{ y:"108%",skewY:3 }} whileInView={{ y:0,skewY:0 }}
-            viewport={{ once:true }} transition={{ duration:1.1, ease:EASE }}
-            className="font-bold" style={{ fontFamily:"var(--font-display)", fontSize:"clamp(28px,4.5vw,58px)", color:"var(--text)", letterSpacing:"-0.03em", lineHeight:1.05 }}>
-            {d.intro}
-          </motion.h2>
-        </div>
-        <motion.p initial={{ opacity:0, y:14 }} whileInView={{ opacity:1, y:0 }}
-          viewport={{ once:true }} transition={{ duration:0.8, delay:0.2 }}
-          className="mt-5 text-base leading-[1.8] max-w-lg" style={{ color:"var(--muted)", fontFamily:"var(--font-body)" }}>
-          {d.introSub}
-        </motion.p>
       </div>
 
       {/* ─── SCROLL-PINNED BUILD ─── */}
